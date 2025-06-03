@@ -26,8 +26,8 @@ const Header = () => {
         
         <nav className="hidden md:flex items-center space-x-8 text-white">
           <Link to="/" className="hover:text-red-400 transition-colors">Home</Link>
-          <span className="hover:text-red-400 transition-colors cursor-pointer">Movies</span>
-          <span className="hover:text-red-400 transition-colors cursor-pointer">TV Shows</span>
+          <Link to="/movies" className="hover:text-red-400 transition-colors">Movies</Link>
+          <Link to="/tv-shows" className="hover:text-red-400 transition-colors">TV Shows</Link>
           <span className="hover:text-red-400 transition-colors cursor-pointer">My List</span>
         </nav>
 
