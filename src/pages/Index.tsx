@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
@@ -65,6 +64,9 @@ const Index = () => {
           <MovieGrid title="Top Rated" movies={topRatedMovies} />
           <MovieGrid title="Now Playing" movies={nowPlayingMovies} />
           <MovieGrid title="Coming Soon" movies={upcomingMovies} />
+          
+          {/* Smart Recommendations */}
+          <SmartRecommendations />
         </div>
         
         <footer className="bg-gray-900 text-white py-12 mt-16">

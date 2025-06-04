@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Film } from 'lucide-react';
+import { Search, Film, MessageSquare, Bookmark } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -28,7 +28,14 @@ const Header = () => {
           <Link to="/" className="hover:text-red-400 transition-colors">Home</Link>
           <Link to="/movies" className="hover:text-red-400 transition-colors">Movies</Link>
           <Link to="/tv-shows" className="hover:text-red-400 transition-colors">TV Shows</Link>
-          <span className="hover:text-red-400 transition-colors cursor-pointer">My List</span>
+          <Link to="/my-list" className="hover:text-red-400 transition-colors flex items-center space-x-1">
+            <Bookmark size={16} />
+            <span>My List</span>
+          </Link>
+          <Link to="/feedback" className="hover:text-red-400 transition-colors flex items-center space-x-1">
+            <MessageSquare size={16} />
+            <span>Feedback</span>
+          </Link>
         </nav>
 
         <form onSubmit={handleSearch} className="flex items-center space-x-2">

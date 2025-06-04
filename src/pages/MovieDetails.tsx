@@ -1,11 +1,11 @@
-
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useToast } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Play, Video } from 'lucide-react';
+import { ArrowLeft, Play, Video, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import MovieGrid from '@/components/MovieGrid';
+import MoviePlayer from '@/components/MoviePlayer';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -21,12 +21,59 @@ const fetchMovieDetails = async (id: string) => {
 const MovieDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const { data: movie, isLoading, error } = useQuery({
     queryKey: ['movie', id],
     queryFn: () => fetchMovieDetails(id!),
     enabled: !!id,
   });
+
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const [currentStreamData, setCurrentStreamData] = useState<any>(null);
+
+  const handleWatchNow = async () => {
+    try {
+      const { getMovieStreamingData } = await import('@/services/movieService');
+      const streamData = await getMovieStreamingData(movie.id);
+      setCurrentStreamData(streamData);
+      setIsPlayerOpen(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load movie stream. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const addToWatchlist = () => {
+    const watchlist = JSON.parse(localStorage.getItem('reelflix-watchlist') || '[]');
+    const isAlreadyInList = watchlist.some((item: any) => item.id === movie.id);
+    
+    if (!isAlreadyInList) {
+      const newItem = {
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        overview: movie.overview,
+        release_date: movie.release_date,
+        vote_average: movie.vote_average,
+        addedAt: new Date().toISOString(),
+      };
+      watchlist.push(newItem);
+      localStorage.setItem('reelflix-watchlist', JSON.stringify(watchlist));
+      toast({
+        title: "Added to My List",
+        description: `${movie.title} has been added to your watchlist.`,
+      });
+    } else {
+      toast({
+        title: "Already in List",
+        description: "This movie is already in your watchlist.",
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -126,6 +173,7 @@ const MovieDetails = () => {
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
                   <Button 
                     size="lg" 
+                    onClick={handleWatchNow}
                     className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 transform hover:scale-105"
                   >
                     <Play size={24} />
@@ -135,7 +183,17 @@ const MovieDetails = () => {
                   <Button 
                     variant="outline" 
                     size="lg" 
+                    onClick={addToWatchlist}
                     className="border-white text-white hover:bg-white hover:text-black font-semibold px-8 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300"
+                  >
+                    <Plus size={24} />
+                    <span>Add to List</span>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="border-gray-400 text-gray-300 hover:bg-gray-700 hover:border-gray-300 font-semibold px-8 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300"
                   >
                     <Video size={24} />
                     <span>Watch Trailer</span>
@@ -214,6 +272,16 @@ const MovieDetails = () => {
           </div>
         </footer>
       </main>
+      
+      {isPlayerOpen && currentStreamData && (
+        <MoviePlayer
+          streamData={currentStreamData}
+          onClose={() => {
+            setIsPlayerOpen(false);
+            setCurrentStreamData(null);
+          }}
+        />
+      )}
     </div>
   );
 };

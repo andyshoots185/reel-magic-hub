@@ -1,9 +1,10 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Video } from 'lucide-react';
+import { Play, Video, Plus, Check, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 interface Movie {
   id: number;
@@ -16,7 +17,44 @@ interface Movie {
 
 const MovieCard = ({ movie }: { movie: Movie }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useState(() => {
+    // Check if movie is in watchlist
+    const watchlist = JSON.parse(localStorage.getItem('reelflix-watchlist') || '[]');
+    setIsInWatchlist(watchlist.some((item: any) => item.id === movie.id));
+  });
+
+  const addToWatchlist = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const watchlist = JSON.parse(localStorage.getItem('reelflix-watchlist') || '[]');
+    
+    if (isInWatchlist) {
+      // Remove from watchlist
+      const updatedList = watchlist.filter((item: any) => item.id !== movie.id);
+      localStorage.setItem('reelflix-watchlist', JSON.stringify(updatedList));
+      setIsInWatchlist(false);
+      toast({
+        title: "Removed from My List",
+        description: `${movie.title} has been removed from your watchlist.`,
+      });
+    } else {
+      // Add to watchlist
+      const newItem = {
+        ...movie,
+        addedAt: new Date().toISOString(),
+      };
+      watchlist.push(newItem);
+      localStorage.setItem('reelflix-watchlist', JSON.stringify(watchlist));
+      setIsInWatchlist(true);
+      toast({
+        title: "Added to My List",
+        description: `${movie.title} has been added to your watchlist.`,
+      });
+    }
+  };
 
   return (
     <div 
@@ -71,12 +109,24 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
                 variant="outline" 
                 size="sm" 
                 className="border-white text-white hover:bg-white hover:text-black"
+                onClick={addToWatchlist}
+              >
+                {isInWatchlist ? <Check size={16} /> : <Plus size={16} />}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-green-500 text-green-400 hover:bg-green-500 hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation();
-                  navigate(`/movie/${movie.id}`);
+                  // Download functionality would be implemented here
+                  toast({
+                    title: "Download Started",
+                    description: `Downloading ${movie.title}...`,
+                  });
                 }}
               >
-                <Video size={16} />
+                <Download size={16} />
               </Button>
             </div>
           </div>
