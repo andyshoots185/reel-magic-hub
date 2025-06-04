@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import MovieGrid from '@/components/MovieGrid';
+import SmartRecommendations from '@/components/SmartRecommendations';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63'; // TMDB API key (public)
 const BASE_URL = 'https://api.themoviedb.org/3';

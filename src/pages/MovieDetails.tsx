@@ -1,8 +1,11 @@
-import { useParams, useNavigate, useToast } from 'react-router-dom';
+
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Play, Video, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import MovieGrid from '@/components/MovieGrid';
 import MoviePlayer from '@/components/MoviePlayer';
