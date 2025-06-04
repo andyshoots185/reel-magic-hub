@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Video, Plus, Check, Download } from 'lucide-react';
+import { Play, Video, Plus, Check, Download, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -56,6 +56,16 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
     }
   };
 
+  const shareMovie = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}/movie/${movie.id}`;
+    navigator.clipboard.writeText(shareUrl);
+    toast({
+      title: "Link Copied!",
+      description: "Movie link has been copied to your clipboard.",
+    });
+  };
+
   return (
     <div 
       className="relative group cursor-pointer transition-all duration-300 transform hover:scale-110 hover:z-20"
@@ -93,10 +103,10 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
               </Badge>
             </div>
             
-            <div className="flex space-x-2">
+            <div className="grid grid-cols-2 gap-2">
               <Button 
                 size="sm" 
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                className="bg-red-600 hover:bg-red-700 text-white"
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate(`/movie/${movie.id}`);
@@ -119,7 +129,6 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
                 className="border-green-500 text-green-400 hover:bg-green-500 hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Download functionality would be implemented here
                   toast({
                     title: "Download Started",
                     description: `Downloading ${movie.title}...`,
@@ -127,6 +136,14 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
                 }}
               >
                 <Download size={16} />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+                onClick={shareMovie}
+              >
+                <Share2 size={16} />
               </Button>
             </div>
           </div>

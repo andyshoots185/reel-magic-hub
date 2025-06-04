@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import MovieGrid from '@/components/MovieGrid';
 import SmartRecommendations from '@/components/SmartRecommendations';
+import ContactSection from '@/components/ContactSection';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63'; // TMDB API key (public)
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -70,10 +71,19 @@ const Index = () => {
           <SmartRecommendations />
         </div>
         
-        <footer className="bg-gray-900 text-white py-12 mt-16">
+        {/* Contact Section */}
+        <ContactSection />
+        
+        <footer className="bg-gray-900 text-white py-12">
           <div className="container mx-auto px-4 text-center">
             <h3 className="text-2xl font-bold mb-4 text-red-500">ReelFlix</h3>
             <p className="text-gray-400">Your ultimate movie streaming destination</p>
+            <div className="flex justify-center space-x-6 mt-6 text-sm text-gray-500">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-white transition-colors">Help Center</a>
+              <a href="/feedback" className="hover:text-white transition-colors">Feedback</a>
+            </div>
             <p className="text-gray-500 text-sm mt-4">© 2024 ReelFlix. All rights reserved.</p>
           </div>
         </footer>

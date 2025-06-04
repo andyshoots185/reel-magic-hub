@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -9,6 +8,9 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import MovieGrid from '@/components/MovieGrid';
 import MoviePlayer from '@/components/MoviePlayer';
+import SocialShare from '@/components/SocialShare';
+import WatchParty from '@/components/WatchParty';
+import MovieRating from '@/components/MovieRating';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -201,6 +203,17 @@ const MovieDetails = () => {
                     <Video size={24} />
                     <span>Watch Trailer</span>
                   </Button>
+                  
+                  <SocialShare movieTitle={movie.title} movieId={movie.id} />
+                </div>
+                
+                {/* Movie Rating */}
+                <div className="mb-8">
+                  <MovieRating 
+                    movieId={movie.id} 
+                    movieTitle={movie.title}
+                    currentRating={JSON.parse(localStorage.getItem('reelflix-ratings') || '{}')[movie.id] || 0}
+                  />
                 </div>
                 
                 {/* Movie Stats */}
@@ -234,6 +247,13 @@ const MovieDetails = () => {
             </div>
           </div>
         </div>
+        
+        {/* Watch Party Section */}
+        <section className="py-16 bg-gray-900">
+          <div className="container mx-auto px-4">
+            <WatchParty movieTitle={movie.title} movieId={movie.id} />
+          </div>
+        </section>
         
         {/* Cast Section */}
         <section className="py-16 bg-gray-900">
