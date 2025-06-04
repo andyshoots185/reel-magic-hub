@@ -4,7 +4,7 @@ import { Play, Pause, Volume2, VolumeX, Settings, Download, Maximize, SkipBack, 
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MovieStreamData } from '@/services/movieService';
+import { MovieStreamData, updateWatchProgress } from '@/services/movieService';
 
 interface MoviePlayerProps {
   streamData: MovieStreamData;
@@ -16,16 +16,80 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   const [volume, setVolume] = useState([80]);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState([streamData.watchProgress || 0]);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [selectedQuality, setSelectedQuality] = useState('1080p');
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const progressUpdateTimer = useRef<NodeJS.Timeout>();
 
+  // Auto-hide controls
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(false), 3000);
     return () => clearTimeout(timer);
   }, [showControls]);
+
+  // Set up video event listeners
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleLoadedMetadata = () => {
+      setDuration(video.duration);
+      // If there's watch progress, seek to that position
+      if (streamData.watchProgress && streamData.watchProgress > 0) {
+        const startTime = (streamData.watchProgress / 100) * video.duration;
+        video.currentTime = startTime;
+        setCurrentTime(startTime);
+      }
+    };
+
+    const handleTimeUpdate = () => {
+      const currentTimeValue = video.currentTime;
+      setCurrentTime(currentTimeValue);
+      const progressPercent = (currentTimeValue / video.duration) * 100;
+      setProgress([progressPercent]);
+    };
+
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('timeupdate', handleTimeUpdate);
+
+    return () => {
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }, [streamData.watchProgress]);
+
+  // Save progress periodically
+  useEffect(() => {
+    if (isPlaying && currentTime > 0) {
+      progressUpdateTimer.current = setInterval(() => {
+        updateWatchProgress(streamData.id, Math.floor(currentTime));
+      }, 10000); // Update every 10 seconds
+    } else {
+      if (progressUpdateTimer.current) {
+        clearInterval(progressUpdateTimer.current);
+      }
+    }
+
+    return () => {
+      if (progressUpdateTimer.current) {
+        clearInterval(progressUpdateTimer.current);
+      }
+    };
+  }, [isPlaying, currentTime, streamData.id]);
+
+  // Save progress when closing
+  useEffect(() => {
+    return () => {
+      if (currentTime > 0) {
+        const completed = currentTime / duration > 0.9; // Consider 90% as completed
+        updateWatchProgress(streamData.id, Math.floor(currentTime), completed);
+      }
+    };
+  }, [currentTime, duration, streamData.id]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -53,10 +117,12 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   };
 
   const handleProgressChange = (value: number[]) => {
+    const newProgress = value[0];
     setProgress(value);
-    if (videoRef.current) {
-      const duration = videoRef.current.duration || streamData.duration * 60;
-      videoRef.current.currentTime = (value[0] / 100) * duration;
+    if (videoRef.current && duration > 0) {
+      const newTime = (newProgress / 100) * duration;
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
     }
   };
 
@@ -85,11 +151,43 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   const downloadMovie = () => {
     const selectedStream = streamData.streamingLinks.find(link => link.quality === selectedQuality);
     if (selectedStream) {
-      // Simulate download
-      console.log(`Downloading ${streamData.title} in ${selectedQuality} (${selectedStream.size})`);
-      // In a real app, this would trigger the download
+      const link = document.createElement('a');
+      link.href = selectedStream.url;
+      link.download = `${streamData.title}_${selectedQuality}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
+
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // If no streaming links available, show message
+  if (!streamData.streamingLinks || streamData.streamingLinks.length === 0) {
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+        <div className="text-center text-white">
+          <h2 className="text-2xl font-bold mb-4">Movie Not Available</h2>
+          <p className="text-gray-300 mb-6">
+            This movie is not yet available for streaming. Please check back later.
+          </p>
+          <Button onClick={onClose} variant="outline" className="border-white text-white hover:bg-white hover:text-black">
+            Close
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentStreamUrl = streamData.streamingLinks.find(link => link.quality === selectedQuality)?.url || streamData.streamingLinks[0]?.url;
 
   return (
     <div 
@@ -102,8 +200,10 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
         className="w-full h-full object-contain"
         poster={`https://image.tmdb.org/t/p/original${streamData.id}`}
         onClick={togglePlay}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       >
-        <source src={streamData.streamingLinks.find(link => link.quality === selectedQuality)?.url} type="video/mp4" />
+        <source src={currentStreamUrl} type="video/mp4" />
         {streamData.subtitles.map((subtitle) => (
           <track
             key={subtitle.language}
@@ -166,12 +266,12 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
                 value={progress}
                 onValueChange={handleProgressChange}
                 max={100}
-                step={1}
+                step={0.1}
                 className="w-full"
               />
               <div className="flex justify-between text-sm text-white/80">
-                <span>{Math.floor(progress[0])}%</span>
-                <span>{streamData.duration} min</span>
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
               </div>
             </div>
 
@@ -222,18 +322,20 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
               </div>
 
               <div className="flex items-center space-x-4">
-                <Select value={selectedQuality} onValueChange={setSelectedQuality}>
-                  <SelectTrigger className="w-24 bg-transparent border-white/20 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {streamData.streamingLinks.map((link) => (
-                      <SelectItem key={link.quality} value={link.quality}>
-                        {link.quality}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {streamData.streamingLinks.length > 0 && (
+                  <Select value={selectedQuality} onValueChange={setSelectedQuality}>
+                    <SelectTrigger className="w-24 bg-transparent border-white/20 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {streamData.streamingLinks.map((link) => (
+                        <SelectItem key={link.quality} value={link.quality}>
+                          {link.quality}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 <Button
                   variant="ghost"
                   size="icon"

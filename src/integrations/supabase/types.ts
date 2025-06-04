@@ -385,6 +385,124 @@ export type Database = {
           },
         ]
       }
+      movie_content: {
+        Row: {
+          backdrop_url: string | null
+          created_at: string
+          duration: number | null
+          file_size: number | null
+          id: string
+          poster_url: string | null
+          status: string | null
+          title: string
+          tmdb_id: number
+          trailer_url: string | null
+          updated_at: string
+          video_quality: string | null
+          video_url: string | null
+        }
+        Insert: {
+          backdrop_url?: string | null
+          created_at?: string
+          duration?: number | null
+          file_size?: number | null
+          id?: string
+          poster_url?: string | null
+          status?: string | null
+          title: string
+          tmdb_id: number
+          trailer_url?: string | null
+          updated_at?: string
+          video_quality?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          backdrop_url?: string | null
+          created_at?: string
+          duration?: number | null
+          file_size?: number | null
+          id?: string
+          poster_url?: string | null
+          status?: string | null
+          title?: string
+          tmdb_id?: number
+          trailer_url?: string | null
+          updated_at?: string
+          video_quality?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      movie_streams: {
+        Row: {
+          bitrate: number | null
+          created_at: string
+          file_size: number | null
+          id: string
+          movie_content_id: string | null
+          quality: string
+          video_url: string
+        }
+        Insert: {
+          bitrate?: number | null
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          movie_content_id?: string | null
+          quality: string
+          video_url: string
+        }
+        Update: {
+          bitrate?: number | null
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          movie_content_id?: string | null
+          quality?: string
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movie_streams_movie_content_id_fkey"
+            columns: ["movie_content_id"]
+            isOneToOne: false
+            referencedRelation: "movie_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      movie_subtitles: {
+        Row: {
+          created_at: string
+          id: string
+          language: string
+          movie_content_id: string | null
+          subtitle_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          language: string
+          movie_content_id?: string | null
+          subtitle_url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          language?: string
+          movie_content_id?: string | null
+          subtitle_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movie_subtitles_movie_content_id_fkey"
+            columns: ["movie_content_id"]
+            isOneToOne: false
+            referencedRelation: "movie_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string | null
@@ -703,12 +821,54 @@ export type Database = {
           },
         ]
       }
+      watch_progress: {
+        Row: {
+          completed: boolean | null
+          id: string
+          last_watched: string | null
+          movie_content_id: string | null
+          progress_seconds: number | null
+          user_id: string | null
+        }
+        Insert: {
+          completed?: boolean | null
+          id?: string
+          last_watched?: string | null
+          movie_content_id?: string | null
+          progress_seconds?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          completed?: boolean | null
+          id?: string
+          last_watched?: string | null
+          movie_content_id?: string | null
+          progress_seconds?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watch_progress_movie_content_id_fkey"
+            columns: ["movie_content_id"]
+            isOneToOne: false
+            referencedRelation: "movie_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_watch_progress: {
+        Args: {
+          p_movie_content_id: string
+          p_progress_seconds: number
+          p_completed?: boolean
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
