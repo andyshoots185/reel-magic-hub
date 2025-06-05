@@ -17,66 +17,44 @@ export interface MovieStreamData {
   watchProgress?: number;
 }
 
-// Demo streaming data for different movies
-const getDemoStreamingData = (movieId: number, title: string): MovieStreamData => {
-  return {
-    id: movieId,
-    title,
-    streamingLinks: [
-      {
-        quality: '4K',
-        url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-        size: '2.1 GB'
-      },
-      {
-        quality: '1080p',
-        url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-        size: '1.2 GB'
-      },
-      {
-        quality: '720p',
-        url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-        size: '800 MB'
-      },
-      {
-        quality: '480p',
-        url: 'https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
-        size: '400 MB'
-      }
-    ],
-    subtitles: [
-      { language: 'English', url: 'https://example.com/subtitles/en.vtt' },
-      { language: 'Spanish', url: 'https://example.com/subtitles/es.vtt' },
-      { language: 'French', url: 'https://example.com/subtitles/fr.vtt' }
-    ],
-    duration: 120,
-    watchProgress: Math.floor(Math.random() * 80) // Random progress for demo
-  };
-};
-
 export const getMovieStreamingData = async (movieId: number): Promise<MovieStreamData> => {
   try {
-    // Fetch movie details from TMDB to get the title
+    // Fetch movie details from TMDB to get the title and runtime
     const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
     const movie = await response.json();
     
-    // Return demo streaming data with actual movie title
-    return getDemoStreamingData(movieId, movie.title || 'Demo Movie');
+    // Note: In a real streaming service, you would have actual video files
+    // For now, we return empty streaming links since demo videos were removed
+    return {
+      id: movieId,
+      title: movie.title || 'Movie Title',
+      streamingLinks: [], // No demo videos - would be populated with real content
+      subtitles: [],
+      duration: movie.runtime || 120,
+      watchProgress: 0
+    };
   } catch (error) {
     console.error('Error fetching movie details:', error);
-    return getDemoStreamingData(movieId, 'Demo Movie');
+    return {
+      id: movieId,
+      title: 'Movie Title',
+      streamingLinks: [],
+      subtitles: [],
+      duration: 120,
+      watchProgress: 0
+    };
   }
 };
 
 export const updateWatchProgress = async (movieId: number, progressSeconds: number, completed: boolean = false) => {
-  // Demo implementation - just log the progress
+  // Log the progress update
   console.log(`Updating watch progress for movie ${movieId}:`, {
     progressSeconds,
     completed,
     timestamp: new Date().toISOString()
   });
   
-  // In a real implementation, this would save to a database
+  // Save to localStorage for demo purposes
   localStorage.setItem(`watch_progress_${movieId}`, JSON.stringify({
     progressSeconds,
     completed,
@@ -85,7 +63,12 @@ export const updateWatchProgress = async (movieId: number, progressSeconds: numb
 };
 
 export const getMovieTrailers = async (movieId: number) => {
-  const response = await fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`);
-  const data = await response.json();
-  return data.results?.filter((video: any) => video.type === 'Trailer') || [];
+  try {
+    const response = await fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`);
+    const data = await response.json();
+    return data.results?.filter((video: any) => video.type === 'Trailer') || [];
+  } catch (error) {
+    console.error('Error fetching movie trailers:', error);
+    return [];
+  }
 };
