@@ -134,6 +134,42 @@ export type Database = {
           },
         ]
       }
+      download_queue: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          download_url: string | null
+          file_size: number | null
+          id: string
+          movie_id: number
+          quality: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          download_url?: string | null
+          file_size?: number | null
+          id?: string
+          movie_id: number
+          quality?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          download_url?: string | null
+          file_size?: number | null
+          id?: string
+          movie_id?: number
+          quality?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       message_reads: {
         Row: {
           id: string
@@ -236,6 +272,84 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
+        }
+        Relationships: []
+      }
+      movie_comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          movie_id: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          movie_id: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          movie_id?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      movie_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_liked: boolean
+          movie_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_liked: boolean
+          movie_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_liked?: boolean
+          movie_id?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      movie_shares: {
+        Row: {
+          created_at: string | null
+          id: string
+          movie_id: number
+          share_message: string | null
+          shared_with_email: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          movie_id: number
+          share_message?: string | null
+          shared_with_email?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          movie_id?: number
+          share_message?: string | null
+          shared_with_email?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -346,6 +460,69 @@ export type Database = {
           },
         ]
       }
+      user_preferences: {
+        Row: {
+          auto_play_next: boolean | null
+          created_at: string | null
+          default_quality: string | null
+          default_subtitle_language: string | null
+          id: string
+          parental_controls: Json | null
+          preferred_genres: Json | null
+          preferred_languages: string[] | null
+          subtitles_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_play_next?: boolean | null
+          created_at?: string | null
+          default_quality?: string | null
+          default_subtitle_language?: string | null
+          id?: string
+          parental_controls?: Json | null
+          preferred_genres?: Json | null
+          preferred_languages?: string[] | null
+          subtitles_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_play_next?: boolean | null
+          created_at?: string | null
+          default_quality?: string | null
+          default_subtitle_language?: string | null
+          id?: string
+          parental_controls?: Json | null
+          preferred_genres?: Json | null
+          preferred_languages?: string[] | null
+          subtitles_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_watchlists: {
+        Row: {
+          added_at: string | null
+          id: string
+          movie_id: number
+          user_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          id?: string
+          movie_id: number
+          user_id: string
+        }
+        Update: {
+          added_at?: string | null
+          id?: string
+          movie_id?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           avatar_url: string | null
@@ -376,6 +553,39 @@ export type Database = {
           phone?: string | null
           updated_at?: string | null
           username?: string
+        }
+        Relationships: []
+      }
+      watch_history: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          duration_seconds: number | null
+          id: string
+          last_watched_at: string | null
+          movie_id: number
+          progress_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          last_watched_at?: string | null
+          movie_id: number
+          progress_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          last_watched_at?: string | null
+          movie_id?: number
+          progress_seconds?: number | null
+          user_id?: string
         }
         Relationships: []
       }

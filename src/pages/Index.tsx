@@ -8,6 +8,8 @@ import MovieGrid from '@/components/MovieGrid';
 import SmartRecommendations from '@/components/SmartRecommendations';
 import ContactSection from '@/components/ContactSection';
 import TrailersSection from '@/components/TrailersSection';
+import ContinueWatching from '@/components/ContinueWatching/ContinueWatching';
+import { useAuth } from '@/components/Auth/AuthProvider';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -24,6 +26,7 @@ interface Movie {
 }
 
 const Index = () => {
+  const { user } = useAuth();
   const [featuredMovies, setFeaturedMovies] = useState<Movie[]>([]);
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<Movie[]>([]);
@@ -68,6 +71,7 @@ const Index = () => {
         
         <div className="py-8">
           <div className="container mx-auto space-y-12">
+            {user && <ContinueWatching />}
             <MovieGrid title="Now Playing" movies={featuredMovies} />
             <MovieGrid title="Popular Movies" movies={popularMovies} />
             <MovieGrid title="Top Rated" movies={topRatedMovies} />
