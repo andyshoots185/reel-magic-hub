@@ -9,864 +9,383 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      afyalink_profiles: {
+      bookings: {
         Row: {
-          avatar_url: string | null
+          adults: number
+          check_in_date: string
+          check_out_date: string
+          children: number
           created_at: string
-          current_location: string | null
-          email: string | null
-          full_name: string | null
-          id: string
-          phone: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          current_location?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string
-          current_location?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      appointments: {
-        Row: {
-          appointment_date: string
-          beneficiary_id: string
-          created_at: string
-          id: string
-          notes: string | null
-          provider_id: string
-          service_id: string | null
-          sponsor_id: string
-          status: string | null
-          updated_at: string
-        }
-        Insert: {
-          appointment_date: string
-          beneficiary_id: string
-          created_at?: string
-          id?: string
-          notes?: string | null
-          provider_id: string
-          service_id?: string | null
-          sponsor_id: string
-          status?: string | null
-          updated_at?: string
-        }
-        Update: {
-          appointment_date?: string
-          beneficiary_id?: string
-          created_at?: string
-          id?: string
-          notes?: string | null
-          provider_id?: string
-          service_id?: string | null
-          sponsor_id?: string
-          status?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_beneficiary_id_fkey"
-            columns: ["beneficiary_id"]
-            isOneToOne: false
-            referencedRelation: "beneficiaries"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointments_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "healthcare_providers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "appointments_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "health_services"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      beneficiaries: {
-        Row: {
-          created_at: string
-          date_of_birth: string | null
-          emergency_contact: string | null
-          full_name: string
-          id: string
-          location: string | null
-          medical_conditions: string | null
-          phone: string | null
-          photo_url: string | null
-          relationship: string
-          sponsor_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          date_of_birth?: string | null
-          emergency_contact?: string | null
-          full_name: string
-          id?: string
-          location?: string | null
-          medical_conditions?: string | null
-          phone?: string | null
-          photo_url?: string | null
-          relationship: string
-          sponsor_id: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          date_of_birth?: string | null
-          emergency_contact?: string | null
-          full_name?: string
-          id?: string
-          location?: string | null
-          medical_conditions?: string | null
-          phone?: string | null
-          photo_url?: string | null
-          relationship?: string
-          sponsor_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      favorites: {
-        Row: {
-          created_at: string | null
-          id: string
-          restaurant_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          restaurant_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          restaurant_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "favorites_restaurant_id_fkey"
-            columns: ["restaurant_id"]
-            isOneToOne: false
-            referencedRelation: "restaurants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      food_items: {
-        Row: {
-          availability: boolean | null
-          category_id: string | null
-          created_at: string | null
-          description: string | null
-          discount_price: number | null
-          id: string
-          image: string | null
-          ingredients: string[] | null
-          is_featured: boolean | null
-          is_gluten_free: boolean | null
-          is_vegan: boolean | null
-          is_vegetarian: boolean | null
-          name: string
-          price: number
-          restaurant_id: string
-          spice_level: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          availability?: boolean | null
-          category_id?: string | null
-          created_at?: string | null
-          description?: string | null
-          discount_price?: number | null
-          id?: string
-          image?: string | null
-          ingredients?: string[] | null
-          is_featured?: boolean | null
-          is_gluten_free?: boolean | null
-          is_vegan?: boolean | null
-          is_vegetarian?: boolean | null
-          name: string
-          price: number
-          restaurant_id: string
-          spice_level?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          availability?: boolean | null
-          category_id?: string | null
-          created_at?: string | null
-          description?: string | null
-          discount_price?: number | null
-          id?: string
-          image?: string | null
-          ingredients?: string[] | null
-          is_featured?: boolean | null
-          is_gluten_free?: boolean | null
-          is_vegan?: boolean | null
-          is_vegetarian?: boolean | null
-          name?: string
-          price?: number
-          restaurant_id?: string
-          spice_level?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "food_items_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "menu_categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "food_items_restaurant_id_fkey"
-            columns: ["restaurant_id"]
-            isOneToOne: false
-            referencedRelation: "restaurants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      health_services: {
-        Row: {
-          category: string
-          created_at: string
-          description: string | null
-          duration_minutes: number | null
-          id: string
-          is_available: boolean | null
-          name: string
-          price: number
-          provider_id: string
-          updated_at: string
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string
-          is_available?: boolean | null
-          name: string
-          price: number
-          provider_id: string
-          updated_at?: string
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          description?: string | null
-          duration_minutes?: number | null
-          id?: string
-          is_available?: boolean | null
-          name?: string
-          price?: number
-          provider_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "health_services_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "healthcare_providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      healthcare_providers: {
-        Row: {
-          address: string | null
-          created_at: string
-          email: string | null
-          id: string
-          is_verified: boolean | null
-          license_number: string | null
-          name: string
-          phone: string | null
-          rating: number | null
-          specialties: string[] | null
-          type: string
-          updated_at: string
-        }
-        Insert: {
-          address?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          is_verified?: boolean | null
-          license_number?: string | null
-          name: string
-          phone?: string | null
-          rating?: number | null
-          specialties?: string[] | null
-          type: string
-          updated_at?: string
-        }
-        Update: {
-          address?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          is_verified?: boolean | null
-          license_number?: string | null
-          name?: string
-          phone?: string | null
-          rating?: number | null
-          specialties?: string[] | null
-          type?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      menu_categories: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          display_order: number | null
+          email: string
           id: string
           name: string
-          restaurant_id: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          display_order?: number | null
-          id?: string
-          name: string
-          restaurant_id: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          display_order?: number | null
-          id?: string
-          name?: string
-          restaurant_id?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "menu_categories_restaurant_id_fkey"
-            columns: ["restaurant_id"]
-            isOneToOne: false
-            referencedRelation: "restaurants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      movie_content: {
-        Row: {
-          backdrop_url: string | null
-          created_at: string
-          duration: number | null
-          file_size: number | null
-          id: string
-          poster_url: string | null
-          status: string | null
-          title: string
-          tmdb_id: number
-          trailer_url: string | null
-          updated_at: string
-          video_quality: string | null
-          video_url: string | null
-        }
-        Insert: {
-          backdrop_url?: string | null
-          created_at?: string
-          duration?: number | null
-          file_size?: number | null
-          id?: string
-          poster_url?: string | null
-          status?: string | null
-          title: string
-          tmdb_id: number
-          trailer_url?: string | null
-          updated_at?: string
-          video_quality?: string | null
-          video_url?: string | null
-        }
-        Update: {
-          backdrop_url?: string | null
-          created_at?: string
-          duration?: number | null
-          file_size?: number | null
-          id?: string
-          poster_url?: string | null
-          status?: string | null
-          title?: string
-          tmdb_id?: number
-          trailer_url?: string | null
-          updated_at?: string
-          video_quality?: string | null
-          video_url?: string | null
-        }
-        Relationships: []
-      }
-      movie_streams: {
-        Row: {
-          bitrate: number | null
-          created_at: string
-          file_size: number | null
-          id: string
-          movie_content_id: string | null
-          quality: string
-          video_url: string
-        }
-        Insert: {
-          bitrate?: number | null
-          created_at?: string
-          file_size?: number | null
-          id?: string
-          movie_content_id?: string | null
-          quality: string
-          video_url: string
-        }
-        Update: {
-          bitrate?: number | null
-          created_at?: string
-          file_size?: number | null
-          id?: string
-          movie_content_id?: string | null
-          quality?: string
-          video_url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "movie_streams_movie_content_id_fkey"
-            columns: ["movie_content_id"]
-            isOneToOne: false
-            referencedRelation: "movie_content"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      movie_subtitles: {
-        Row: {
-          created_at: string
-          id: string
-          language: string
-          movie_content_id: string | null
-          subtitle_url: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          language: string
-          movie_content_id?: string | null
-          subtitle_url: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          language?: string
-          movie_content_id?: string | null
-          subtitle_url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "movie_subtitles_movie_content_id_fkey"
-            columns: ["movie_content_id"]
-            isOneToOne: false
-            referencedRelation: "movie_content"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      order_items: {
-        Row: {
-          created_at: string | null
-          food_item_id: string
-          id: string
-          order_id: string
-          price_per_item: number
-          quantity: number
-          special_instructions: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          food_item_id: string
-          id?: string
-          order_id: string
-          price_per_item: number
-          quantity: number
-          special_instructions?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          food_item_id?: string
-          id?: string
-          order_id?: string
-          price_per_item?: number
-          quantity?: number
-          special_instructions?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "order_items_food_item_id_fkey"
-            columns: ["food_item_id"]
-            isOneToOne: false
-            referencedRelation: "food_items"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      orders: {
-        Row: {
-          created_at: string | null
-          delivery_address: string
-          delivery_fee: number
-          delivery_instructions: string | null
-          id: string
-          payment_method: string | null
-          payment_status: string | null
-          restaurant_id: string
-          scheduled_for: string | null
+          payment_id: string | null
+          phone: string
+          room_type: string | null
           status: string
-          subtotal: number
-          tax: number
-          tip: number | null
-          total_amount: number
-          updated_at: string | null
-          user_id: string
+          total_amount: number | null
+          user_id: string | null
         }
         Insert: {
-          created_at?: string | null
-          delivery_address: string
-          delivery_fee?: number
-          delivery_instructions?: string | null
+          adults: number
+          check_in_date: string
+          check_out_date: string
+          children: number
+          created_at?: string
+          email: string
           id?: string
-          payment_method?: string | null
-          payment_status?: string | null
-          restaurant_id: string
-          scheduled_for?: string | null
+          name: string
+          payment_id?: string | null
+          phone: string
+          room_type?: string | null
           status?: string
-          subtotal: number
-          tax?: number
-          tip?: number | null
-          total_amount: number
-          updated_at?: string | null
-          user_id: string
+          total_amount?: number | null
+          user_id?: string | null
         }
         Update: {
-          created_at?: string | null
-          delivery_address?: string
-          delivery_fee?: number
-          delivery_instructions?: string | null
+          adults?: number
+          check_in_date?: string
+          check_out_date?: string
+          children?: number
+          created_at?: string
+          email?: string
           id?: string
-          payment_method?: string | null
-          payment_status?: string | null
-          restaurant_id?: string
-          scheduled_for?: string | null
+          name?: string
+          payment_id?: string | null
+          phone?: string
+          room_type?: string | null
           status?: string
-          subtotal?: number
-          tax?: number
-          tip?: number | null
-          total_amount?: number
-          updated_at?: string | null
-          user_id?: string
+          total_amount?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      chat_participants: {
+        Row: {
+          chat_id: string | null
+          id: string
+          is_admin: boolean | null
+          joined_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          chat_id?: string | null
+          id?: string
+          is_admin?: boolean | null
+          joined_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          chat_id?: string | null
+          id?: string
+          is_admin?: boolean | null
+          joined_at?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "orders_restaurant_id_fkey"
-            columns: ["restaurant_id"]
+            foreignKeyName: "chat_participants_chat_id_fkey"
+            columns: ["chat_id"]
             isOneToOne: false
-            referencedRelation: "restaurants"
+            referencedRelation: "chats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
+      }
+      chats: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_group: boolean | null
+          name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_group?: boolean | null
+          name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_group?: boolean | null
+          name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chats_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_reads: {
+        Row: {
+          id: string
+          message_id: string | null
+          read_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          message_id?: string | null
+          read_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          message_id?: string | null
+          read_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reads_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_reads_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          chat_id: string | null
+          content: string | null
+          created_at: string | null
+          disappear_at: string | null
+          id: string
+          is_forwarded: boolean | null
+          media_url: string | null
+          message_type: string | null
+          sender_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          chat_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          disappear_at?: string | null
+          id?: string
+          is_forwarded?: boolean | null
+          media_url?: string | null
+          message_type?: string | null
+          sender_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          chat_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          disappear_at?: string | null
+          id?: string
+          is_forwarded?: boolean | null
+          media_url?: string | null
+          message_type?: string | null
+          sender_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "chats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      movie: {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
+      movies: {
+        Row: {
+          backdrop_path: string | null
+          category: string
+          created_at: string | null
+          genre_ids: Json | null
+          id: number
+          overview: string | null
+          popularity: number | null
+          poster_path: string | null
+          release_date: string | null
+          title: string
+          vote_average: number | null
+          vote_count: number | null
+        }
+        Insert: {
+          backdrop_path?: string | null
+          category: string
+          created_at?: string | null
+          genre_ids?: Json | null
+          id: number
+          overview?: string | null
+          popularity?: number | null
+          poster_path?: string | null
+          release_date?: string | null
+          title: string
+          vote_average?: number | null
+          vote_count?: number | null
+        }
+        Update: {
+          backdrop_path?: string | null
+          category?: string
+          created_at?: string | null
+          genre_ids?: Json | null
+          id?: number
+          overview?: string | null
+          popularity?: number | null
+          poster_path?: string | null
+          release_date?: string | null
+          title?: string
+          vote_average?: number | null
+          vote_count?: number | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
-          address: string | null
           avatar_url: string | null
-          created_at: string | null
-          first_name: string | null
+          created_at: string
+          email: string
+          full_name: string | null
           id: string
-          last_name: string | null
-          phone: string | null
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
-          address?: string | null
           avatar_url?: string | null
-          created_at?: string | null
-          first_name?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
           id: string
-          last_name?: string | null
-          phone?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
-          address?: string | null
           avatar_url?: string | null
-          created_at?: string | null
-          first_name?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
           id?: string
-          last_name?: string | null
-          phone?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      restaurants: {
-        Row: {
-          address: string | null
-          created_at: string | null
-          cuisine_type: string[] | null
-          delivery_fee: number | null
-          delivery_time: string | null
-          description: string | null
-          id: string
-          image: string | null
-          is_featured: boolean | null
-          latitude: number | null
-          longitude: number | null
-          name: string
-          price_level: number | null
-          rating: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          address?: string | null
-          created_at?: string | null
-          cuisine_type?: string[] | null
-          delivery_fee?: number | null
-          delivery_time?: string | null
-          description?: string | null
-          id?: string
-          image?: string | null
-          is_featured?: boolean | null
-          latitude?: number | null
-          longitude?: number | null
-          name: string
-          price_level?: number | null
-          rating?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          address?: string | null
-          created_at?: string | null
-          cuisine_type?: string[] | null
-          delivery_fee?: number | null
-          delivery_time?: string | null
-          description?: string | null
-          id?: string
-          image?: string | null
-          is_featured?: boolean | null
-          latitude?: number | null
-          longitude?: number | null
-          name?: string
-          price_level?: number | null
-          rating?: number | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
       reviews: {
         Row: {
-          created_at: string | null
-          id: string
-          order_id: string | null
-          rating: number
-          restaurant_id: string
-          review_text: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          order_id?: string | null
-          rating: number
-          restaurant_id: string
-          review_text?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          order_id?: string | null
-          rating?: number
-          restaurant_id?: string
-          review_text?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reviews_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_restaurant_id_fkey"
-            columns: ["restaurant_id"]
-            isOneToOne: false
-            referencedRelation: "restaurants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      transactions: {
-        Row: {
-          amount: number
-          beneficiary_id: string
+          booking_id: string | null
+          comment: string | null
           created_at: string
-          currency: string | null
-          description: string | null
-          external_transaction_id: string | null
           id: string
-          payment_method: string | null
-          provider_id: string | null
-          receipt_url: string | null
-          service_id: string | null
-          sponsor_id: string
-          status: string | null
-          updated_at: string
-        }
-        Insert: {
-          amount: number
-          beneficiary_id: string
-          created_at?: string
-          currency?: string | null
-          description?: string | null
-          external_transaction_id?: string | null
-          id?: string
-          payment_method?: string | null
-          provider_id?: string | null
-          receipt_url?: string | null
-          service_id?: string | null
-          sponsor_id: string
-          status?: string | null
-          updated_at?: string
-        }
-        Update: {
-          amount?: number
-          beneficiary_id?: string
-          created_at?: string
-          currency?: string | null
-          description?: string | null
-          external_transaction_id?: string | null
-          id?: string
-          payment_method?: string | null
-          provider_id?: string | null
-          receipt_url?: string | null
-          service_id?: string | null
-          sponsor_id?: string
-          status?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_beneficiary_id_fkey"
-            columns: ["beneficiary_id"]
-            isOneToOne: false
-            referencedRelation: "beneficiaries"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "healthcare_providers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_service_id_fkey"
-            columns: ["service_id"]
-            isOneToOne: false
-            referencedRelation: "health_services"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      watch_progress: {
-        Row: {
-          completed: boolean | null
-          id: string
-          last_watched: string | null
-          movie_content_id: string | null
-          progress_seconds: number | null
+          rating: number
           user_id: string | null
         }
         Insert: {
-          completed?: boolean | null
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
           id?: string
-          last_watched?: string | null
-          movie_content_id?: string | null
-          progress_seconds?: number | null
+          rating: number
           user_id?: string | null
         }
         Update: {
-          completed?: boolean | null
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
           id?: string
-          last_watched?: string | null
-          movie_content_id?: string | null
-          progress_seconds?: number | null
+          rating?: number
           user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "watch_progress_movie_content_id_fkey"
-            columns: ["movie_content_id"]
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
             isOneToOne: false
-            referencedRelation: "movie_content"
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]
+      }
+      users: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          is_online: boolean | null
+          last_seen: string | null
+          phone: string | null
+          updated_at: string | null
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id: string
+          is_online?: boolean | null
+          last_seen?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_online?: boolean | null
+          last_seen?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          username?: string
+        }
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      update_watch_progress: {
-        Args: {
-          p_movie_content_id: string
-          p_progress_seconds: number
-          p_completed?: boolean
-        }
+      delete_expired_messages: {
+        Args: Record<PropertyKey, never>
         Returns: undefined
       }
     }
