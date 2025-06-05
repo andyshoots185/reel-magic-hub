@@ -14,11 +14,11 @@ const Index = () => {
       <Header />
       
       <main>
-        <HeroSection />
+        <HeroSection movies={[]} />
         
         <div className="py-16">
           <div className="container mx-auto">
-            <MovieGrid movies={[]} />
+            <MovieGrid title="Featured Movies" movies={[]} />
           </div>
         </div>
         
