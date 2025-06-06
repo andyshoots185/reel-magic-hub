@@ -14,31 +14,41 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [trailerVideos, setTrailerVideos] = useState<string[]>([]);
   const { signIn, signInWithProvider } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Popular movie trailer video IDs - Action, Adventure, Sci-Fi movies
-  const movieTrailers = [
-    'TcMBFSGVi1c', // Avatar: The Way of Water
-    'hA6hldpSTF8', // Avengers: Endgame
-    'vOUVVDWdXbo', // The Batman
-    '8g18jFHCLXk', // Dune
-    'JfVOs4VSpmA', // Top Gun: Maverick
-    '1roy4o4tqQM', // Black Panther
-    'gCcx85zbxz4', // Spider-Man: No Way Home
-    'FV3bqvOHRQo', // Fast X
-    'uYPbbksJxIg', // Oppenheimer
-    'qEVUtrk8_B4', // John Wick: Chapter 4
-    'Ca3Jj1s6a8A', // Mission: Impossible
-    'giXco2jaZ_4', // No Time to Die
+  // Popular movie posters from TMDB
+  const moviePosters = [
+    // Column 1
+    [
+      'https://image.tmdb.org/t/p/w500/rktDFPbfHfUbArZ6OOOKsXcv0Bm.jpg', // The Batman
+      'https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg', // Top Gun Maverick
+      'https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg', // Batman Begins
+      'https://image.tmdb.org/t/p/w500/qAZ0pzat24kLdO3o8ejmbLxyOac.jpg', // Interstellar
+    ],
+    // Column 2
+    [
+      'https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg', // Fight Club
+      'https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg', // Parasite
+      'https://image.tmdb.org/t/p/w500/6DrHO1jr3qVrViUO6s6kFiAGM7.jpg', // Fury Road
+      'https://image.tmdb.org/t/p/w500/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg', // The Matrix
+    ],
+    // Column 3
+    [
+      'https://image.tmdb.org/t/p/w500/8WUVHemHFH2ZIP6NWkwlHWsyrEL.jpg', // Pulp Fiction
+      'https://image.tmdb.org/t/p/w500/adOzdWS35KAo21r9R4BuFCkLer6.jpg', // Goodfellas
+      'https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg', // The Dark Knight
+      'https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg', // The Godfather
+    ],
+    // Column 4
+    [
+      'https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg', // Forrest Gump
+      'https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg', // Spirited Away
+      'https://image.tmdb.org/t/p/w500/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg', // The Shawshank Redemption
+      'https://image.tmdb.org/t/p/w500/cezWGskPY5x7GaglTiHwaTXgLn8.jpg', // The Grand Budapest Hotel
+    ]
   ];
-
-  useEffect(() => {
-    // Set all trailers for the moving background
-    setTrailerVideos(movieTrailers);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,126 +85,86 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-700"></div>
-        <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center px-4 py-8 relative overflow-hidden">
+      {/* Moving Movie Posters Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {moviePosters.map((column, columnIndex) => (
+          <div
+            key={columnIndex}
+            className={`absolute top-0 h-full flex flex-col gap-4 ${
+              columnIndex % 2 === 0 ? 'animate-[slideUp_25s_linear_infinite]' : 'animate-[slideDown_30s_linear_infinite]'
+            }`}
+            style={{
+              left: `${columnIndex * 25}%`,
+              width: '20%',
+              transform: `translateY(${columnIndex % 2 === 0 ? '-100%' : '100%'})`,
+              animationDelay: `${columnIndex * 2}s`,
+            }}
+          >
+            {/* Repeat posters for continuous scroll */}
+            {[...column, ...column, ...column].map((poster, posterIndex) => (
+              <div
+                key={`${columnIndex}-${posterIndex}`}
+                className="relative group"
+                style={{ minHeight: '300px' }}
+              >
+                <img
+                  src={poster}
+                  alt={`Movie Poster ${posterIndex + 1}`}
+                  className="w-full h-72 sm:h-80 md:h-96 object-cover rounded-lg shadow-2xl opacity-20 hover:opacity-40 transition-opacity duration-500 border border-white/10"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-lg opacity-60"></div>
+              </div>
+            ))}
+          </div>
+        ))}
       </div>
 
-      {/* Large Moving Movie Trailers Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* First Column */}
-        <div className="absolute top-0 w-80 h-full animate-[slide-left_30s_linear_infinite]" style={{ left: '100%' }}>
-          {trailerVideos.slice(0, 4).map((videoId, index) => (
-            <div
-              key={`col1-${videoId}`}
-              className="w-full h-64 mb-8 opacity-30 rounded-xl overflow-hidden shadow-2xl border border-white/10"
-              style={{ animationDelay: `${index * 2}s` }}
-            >
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
-                title={`Movie Trailer ${index + 1}`}
-                className="w-full h-full border-0"
-                allow="autoplay; encrypted-media"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Second Column */}
-        <div className="absolute top-0 w-80 h-full animate-[slide-left_35s_linear_infinite]" style={{ left: '120%' }}>
-          {trailerVideos.slice(4, 8).map((videoId, index) => (
-            <div
-              key={`col2-${videoId}`}
-              className="w-full h-64 mb-8 opacity-25 rounded-xl overflow-hidden shadow-2xl border border-white/10"
-              style={{ animationDelay: `${index * 2.5}s` }}
-            >
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
-                title={`Movie Trailer ${index + 5}`}
-                className="w-full h-full border-0"
-                allow="autoplay; encrypted-media"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Third Column */}
-        <div className="absolute top-0 w-80 h-full animate-[slide-left_40s_linear_infinite]" style={{ left: '140%' }}>
-          {trailerVideos.slice(8, 12).map((videoId, index) => (
-            <div
-              key={`col3-${videoId}`}
-              className="w-full h-64 mb-8 opacity-20 rounded-xl overflow-hidden shadow-2xl border border-white/10"
-              style={{ animationDelay: `${index * 3}s` }}
-            >
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
-                title={`Movie Trailer ${index + 9}`}
-                className="w-full h-full border-0"
-                allow="autoplay; encrypted-media"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Fourth Column (for continuous effect) */}
-        <div className="absolute top-0 w-80 h-full animate-[slide-left_25s_linear_infinite]" style={{ left: '160%' }}>
-          {trailerVideos.slice(0, 4).map((videoId, index) => (
-            <div
-              key={`col4-${videoId}`}
-              className="w-full h-64 mb-8 opacity-15 rounded-xl overflow-hidden shadow-2xl border border-white/10"
-              style={{ animationDelay: `${index * 1.5}s` }}
-            >
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
-                title={`Movie Trailer ${index + 13}`}
-                className="w-full h-full border-0"
-                allow="autoplay; encrypted-media"
-              />
-            </div>
-          ))}
-        </div>
+      {/* Additional animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+        <div className="absolute top-3/4 left-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       {/* Floating movie icons */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 hidden md:block">
         <Film className="absolute top-20 left-20 text-white/10 w-8 h-8 animate-bounce" />
         <Film className="absolute top-40 right-32 text-white/10 w-6 h-6 animate-bounce delay-300" />
         <Film className="absolute bottom-32 left-40 text-white/10 w-10 h-10 animate-bounce delay-500" />
         <Film className="absolute bottom-20 right-20 text-white/10 w-7 h-7 animate-bounce delay-700" />
       </div>
 
-      <Card className="w-full max-w-md bg-gray-900/95 border-gray-800 backdrop-blur-lg relative z-10 shadow-2xl">
-        <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
-            <Film className="w-8 h-8 text-white" />
+      <Card className="w-full max-w-md bg-gray-900/95 border-gray-800 backdrop-blur-lg relative z-10 shadow-2xl mx-4">
+        <CardHeader className="text-center space-y-4 p-4 sm:p-6">
+          <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+            <Film className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Welcome Back
           </CardTitle>
-          <CardDescription className="text-gray-400">
+          <CardDescription className="text-gray-400 text-sm sm:text-base">
             Sign in to continue your streaming journey
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">Email</Label>
+              <Label htmlFor="email" className="text-white text-sm sm:text-base">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-gray-800 border-gray-700 text-white focus:border-purple-500 focus:ring-purple-500"
+                className="bg-gray-800 border-gray-700 text-white focus:border-purple-500 focus:ring-purple-500 h-10 sm:h-11"
                 placeholder="Enter your email"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Password</Label>
+              <Label htmlFor="password" className="text-white text-sm sm:text-base">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -202,7 +172,7 @@ const LoginForm = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-gray-800 border-gray-700 text-white focus:border-purple-500 focus:ring-purple-500 pr-10"
+                  className="bg-gray-800 border-gray-700 text-white focus:border-purple-500 focus:ring-purple-500 pr-10 h-10 sm:h-11"
                   placeholder="Enter your password"
                 />
                 <Button
@@ -220,7 +190,7 @@ const LoginForm = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-200"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-200 h-10 sm:h-11 text-sm sm:text-base"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
@@ -240,21 +210,21 @@ const LoginForm = () => {
               <Button
                 variant="outline"
                 onClick={() => handleProviderSignIn('google')}
-                className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors"
+                className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors h-10 sm:h-11"
               >
                 <Chrome className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleProviderSignIn('github')}
-                className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors"
+                className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors h-10 sm:h-11"
               >
                 <Github className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleProviderSignIn('twitter')}
-                className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors"
+                className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors h-10 sm:h-11"
               >
                 <Twitter className="h-4 w-4" />
               </Button>
@@ -262,8 +232,8 @@ const LoginForm = () => {
           </div>
 
           <div className="mt-6 text-center">
-            <span className="text-gray-400">Don't have an account? </span>
-            <Link to="/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+            <span className="text-gray-400 text-sm sm:text-base">Don't have an account? </span>
+            <Link to="/register" className="text-purple-400 hover:text-purple-300 font-medium transition-colors text-sm sm:text-base">
               Sign up
             </Link>
           </div>
@@ -271,12 +241,21 @@ const LoginForm = () => {
       </Card>
 
       <style>{`
-        @keyframes slide-left {
+        @keyframes slideUp {
           0% {
-            transform: translateX(0);
+            transform: translateY(100vh);
           }
           100% {
-            transform: translateX(-200%);
+            transform: translateY(-100vh);
+          }
+        }
+        
+        @keyframes slideDown {
+          0% {
+            transform: translateY(-100vh);
+          }
+          100% {
+            transform: translateY(100vh);
           }
         }
       `}</style>
