@@ -79,11 +79,11 @@ const UserProfile = () => {
 
     if (data) {
       setPreferences({
-        preferred_genres: data.preferred_genres || [],
-        preferred_languages: data.preferred_languages || ['en'],
+        preferred_genres: Array.isArray(data.preferred_genres) ? data.preferred_genres : [],
+        preferred_languages: Array.isArray(data.preferred_languages) ? data.preferred_languages : ['en'],
         default_quality: data.default_quality || '1080p',
-        auto_play_next: data.auto_play_next,
-        subtitles_enabled: data.subtitles_enabled,
+        auto_play_next: data.auto_play_next ?? true,
+        subtitles_enabled: data.subtitles_enabled ?? false,
         default_subtitle_language: data.default_subtitle_language || 'en',
         parental_controls: data.parental_controls || {},
       });
