@@ -15,6 +15,8 @@ export interface MovieStreamData {
   subtitles: Array<{ language: string; url: string }>;
   duration: number;
   watchProgress?: number;
+  posterPath?: string;
+  backdropPath?: string;
 }
 
 export const getMovieStreamingData = async (movieId: number): Promise<MovieStreamData> => {
@@ -31,7 +33,9 @@ export const getMovieStreamingData = async (movieId: number): Promise<MovieStrea
       streamingLinks: [], // No demo videos - would be populated with real content
       subtitles: [],
       duration: movie.runtime || 120,
-      watchProgress: 0
+      watchProgress: 0,
+      posterPath: movie.poster_path,
+      backdropPath: movie.backdrop_path
     };
   } catch (error) {
     console.error('Error fetching movie details:', error);
@@ -41,7 +45,9 @@ export const getMovieStreamingData = async (movieId: number): Promise<MovieStrea
       streamingLinks: [],
       subtitles: [],
       duration: 120,
-      watchProgress: 0
+      watchProgress: 0,
+      posterPath: null,
+      backdropPath: null
     };
   }
 };
