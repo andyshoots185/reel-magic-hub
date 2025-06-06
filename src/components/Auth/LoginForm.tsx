@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,9 +14,28 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [trailerVideos, setTrailerVideos] = useState<string[]>([]);
   const { signIn, signInWithProvider } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Popular movie trailer video IDs
+  const movieTrailers = [
+    'TcMBFSGVi1c', // Avatar
+    '6EiAsmvCEKg', // The Lion King
+    'hA6hldpSTF8', // Avengers Endgame
+    'vOUVVDWdXbo', // The Batman
+    '8g18jFHCLXk', // Dune
+    'JfVOs4VSpmA', // Top Gun Maverick
+    '1roy4o4tqQM', // Black Panther
+    'gCcx85zbxz4', // Spider-Man No Way Home
+  ];
+
+  useEffect(() => {
+    // Randomly select trailers for background
+    const shuffled = [...movieTrailers].sort(() => 0.5 - Math.random());
+    setTrailerVideos(shuffled.slice(0, 4));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +78,32 @@ const LoginForm = () => {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-700"></div>
         <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+
+      {/* Floating movie trailers */}
+      <div className="absolute inset-0 pointer-events-none">
+        {trailerVideos.map((videoId, index) => (
+          <div
+            key={videoId}
+            className={`absolute opacity-20 rounded-lg overflow-hidden shadow-2xl ${
+              index === 0 ? 'top-10 left-10 w-64 h-36 animate-bounce' :
+              index === 1 ? 'top-20 right-16 w-56 h-32 animate-bounce delay-500' :
+              index === 2 ? 'bottom-20 left-20 w-72 h-40 animate-bounce delay-1000' :
+              'bottom-16 right-20 w-60 h-34 animate-bounce delay-1500'
+            }`}
+            style={{
+              animationDuration: '6s',
+              animationTimingFunction: 'ease-in-out',
+            }}
+          >
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
+              title={`Movie Trailer ${index + 1}`}
+              className="w-full h-full border-0"
+              allow="autoplay; encrypted-media"
+            />
+          </div>
+        ))}
       </div>
 
       {/* Floating movie icons */}

@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2, VolumeX, Settings, Download, Maximize, SkipBack, SkipForward } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Settings, Download, Maximize, SkipBack, SkipForward, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -16,14 +16,29 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   const [volume, setVolume] = useState([80]);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState([streamData.watchProgress || 0]);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [selectedQuality, setSelectedQuality] = useState('1080p');
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressUpdateTimer = useRef<NodeJS.Timeout>();
+
+  // Sample YouTube video IDs for full movies (these would normally come from your backend)
+  const getYouTubeVideoId = (movieId: string) => {
+    // This is a mapping of movie IDs to YouTube video IDs
+    // In a real app, this would come from your database
+    const movieYouTubeMap: { [key: string]: string } = {
+      '550': 'BdJKm16Co6M', // Fight Club
+      '13': 'sY1S34973zA', // Forrest Gump
+      '680': 'uYeXQqGY2as', // Pulp Fiction
+      '155': 'sAOzrChqmd0', // The Dark Knight
+      '497': 'QdBZY2fkU-0', // The Shawshank Redemption
+      // Add more movie mappings as needed
+    };
+    
+    return movieYouTubeMap[movieId] || 'dQw4w9WgXcQ'; // Default video if not found
+  };
+
+  const videoId = getYouTubeVideoId(streamData.id.toString());
 
   // Auto-hide controls
   useEffect(() => {
@@ -31,42 +46,11 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
     return () => clearTimeout(timer);
   }, [showControls]);
 
-  // Set up video event listeners
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleLoadedMetadata = () => {
-      setDuration(video.duration);
-      // If there's watch progress, seek to that position
-      if (streamData.watchProgress && streamData.watchProgress > 0) {
-        const startTime = (streamData.watchProgress / 100) * video.duration;
-        video.currentTime = startTime;
-        setCurrentTime(startTime);
-      }
-    };
-
-    const handleTimeUpdate = () => {
-      const currentTimeValue = video.currentTime;
-      setCurrentTime(currentTimeValue);
-      const progressPercent = (currentTimeValue / video.duration) * 100;
-      setProgress([progressPercent]);
-    };
-
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-    video.addEventListener('timeupdate', handleTimeUpdate);
-
-    return () => {
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-    };
-  }, [streamData.watchProgress]);
-
   // Save progress periodically
   useEffect(() => {
-    if (isPlaying && currentTime > 0) {
+    if (isPlaying) {
       progressUpdateTimer.current = setInterval(() => {
-        updateWatchProgress(streamData.id, Math.floor(currentTime));
+        updateWatchProgress(streamData.id, Math.floor(progress[0]));
       }, 10000); // Update every 10 seconds
     } else {
       if (progressUpdateTimer.current) {
@@ -79,51 +63,22 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
         clearInterval(progressUpdateTimer.current);
       }
     };
-  }, [isPlaying, currentTime, streamData.id]);
-
-  // Save progress when closing
-  useEffect(() => {
-    return () => {
-      if (currentTime > 0) {
-        const completed = currentTime / duration > 0.9; // Consider 90% as completed
-        updateWatchProgress(streamData.id, Math.floor(currentTime), completed);
-      }
-    };
-  }, [currentTime, duration, streamData.id]);
+  }, [isPlaying, progress, streamData.id]);
 
   const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
+    setIsPlaying(!isPlaying);
   };
 
   const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    setIsMuted(!isMuted);
   };
 
   const handleVolumeChange = (value: number[]) => {
     setVolume(value);
-    if (videoRef.current) {
-      videoRef.current.volume = value[0] / 100;
-    }
   };
 
   const handleProgressChange = (value: number[]) => {
-    const newProgress = value[0];
     setProgress(value);
-    if (videoRef.current && duration > 0) {
-      const newTime = (newProgress / 100) * duration;
-      videoRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
   };
 
   const toggleFullscreen = () => {
@@ -137,27 +92,18 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   };
 
   const skipForward = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime += 10;
-    }
+    const newProgress = Math.min(progress[0] + 1, 100);
+    setProgress([newProgress]);
   };
 
   const skipBackward = () => {
-    if (videoRef.current) {
-      videoRef.current.currentTime -= 10;
-    }
+    const newProgress = Math.max(progress[0] - 1, 0);
+    setProgress([newProgress]);
   };
 
   const downloadMovie = () => {
-    const selectedStream = streamData.streamingLinks.find(link => link.quality === selectedQuality);
-    if (selectedStream) {
-      const link = document.createElement('a');
-      link.href = selectedStream.url;
-      link.download = `${streamData.title}_${selectedQuality}.mp4`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    // For YouTube videos, we can't download directly, but we can open the video in a new tab
+    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
   };
 
   const formatTime = (seconds: number) => {
@@ -170,24 +116,8 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // If no streaming links available, show message
-  if (!streamData.streamingLinks || streamData.streamingLinks.length === 0) {
-    return (
-      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
-        <div className="text-center text-white">
-          <h2 className="text-2xl font-bold mb-4">Movie Not Available</h2>
-          <p className="text-gray-300 mb-6">
-            This movie is not yet available for streaming. Please check back later.
-          </p>
-          <Button onClick={onClose} variant="outline" className="border-white text-white hover:bg-white hover:text-black">
-            Close
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const currentStreamUrl = streamData.streamingLinks.find(link => link.quality === selectedQuality)?.url || streamData.streamingLinks[0]?.url;
+  // Quality options for YouTube
+  const qualityOptions = ['720p', '1080p', '1440p', '2160p'];
 
   return (
     <div 
@@ -195,25 +125,15 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
       className="fixed inset-0 bg-black z-50 flex items-center justify-center"
       onMouseMove={() => setShowControls(true)}
     >
-      <video
-        ref={videoRef}
-        className="w-full h-full object-contain"
-        poster={`https://image.tmdb.org/t/p/original${streamData.id}`}
-        onClick={togglePlay}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-      >
-        <source src={currentStreamUrl} type="video/mp4" />
-        {streamData.subtitles.map((subtitle) => (
-          <track
-            key={subtitle.language}
-            kind="subtitles"
-            src={subtitle.url}
-            srcLang={subtitle.language.toLowerCase()}
-            label={subtitle.language}
-          />
-        ))}
-      </video>
+      {/* YouTube Iframe */}
+      <iframe
+        className="w-full h-full"
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? 1 : 0}&mute=${isMuted ? 1 : 0}&controls=0&rel=0&modestbranding=1&iv_load_policy=3&cc_load_policy=0&fs=1&disablekb=1&start=${Math.floor((progress[0] / 100) * 3600)}`}
+        title={streamData.title}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
 
       {/* Player Controls */}
       <div className={`absolute inset-0 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
@@ -222,7 +142,7 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
           <div className="flex items-center justify-between text-white">
             <div>
               <h1 className="text-xl font-bold">{streamData.title}</h1>
-              <p className="text-sm opacity-80">Quality: {selectedQuality}</p>
+              <p className="text-sm opacity-80">Quality: {selectedQuality} • YouTube Player</p>
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -230,6 +150,7 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
                 size="icon"
                 onClick={downloadMovie}
                 className="text-white hover:bg-white/20"
+                title="Open on YouTube"
               >
                 <Download size={20} />
               </Button>
@@ -239,7 +160,7 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
                 onClick={onClose}
                 className="text-white hover:bg-white/20"
               >
-                ✕
+                <X size={20} />
               </Button>
             </div>
           </div>
@@ -270,8 +191,8 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
                 className="w-full"
               />
               <div className="flex justify-between text-sm text-white/80">
-                <span>{formatTime(currentTime)}</span>
-                <span>{formatTime(duration)}</span>
+                <span>{formatTime((progress[0] / 100) * 3600)}</span>
+                <span>1:00:00</span>
               </div>
             </div>
 
@@ -322,20 +243,18 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
               </div>
 
               <div className="flex items-center space-x-4">
-                {streamData.streamingLinks.length > 0 && (
-                  <Select value={selectedQuality} onValueChange={setSelectedQuality}>
-                    <SelectTrigger className="w-24 bg-transparent border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {streamData.streamingLinks.map((link) => (
-                        <SelectItem key={link.quality} value={link.quality}>
-                          {link.quality}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
+                <Select value={selectedQuality} onValueChange={setSelectedQuality}>
+                  <SelectTrigger className="w-24 bg-transparent border-white/20 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {qualityOptions.map((quality) => (
+                      <SelectItem key={quality} value={quality}>
+                        {quality}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button
                   variant="ghost"
                   size="icon"
