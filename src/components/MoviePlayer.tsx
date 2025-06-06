@@ -105,7 +105,7 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
       {/* Movie Poster/Placeholder */}
       <div className="w-full h-full relative flex items-center justify-center">
         <img
-          src={`https://image.tmdb.org/t/p/original${streamData.poster_path || streamData.backdrop_path}`}
+          src={`https://image.tmdb.org/t/p/original${streamData.posterPath || streamData.backdropPath}`}
           alt={streamData.title}
           className="w-full h-full object-cover"
         />
