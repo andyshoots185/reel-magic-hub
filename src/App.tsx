@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/Auth/AuthProvider";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
+import PerformanceOptimizer from "@/components/PerformanceOptimizer";
 import Index from "./pages/Index";
 import Movies from "./pages/Movies";
 import TVShows from "./pages/TVShows";
@@ -18,12 +19,21 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: 2,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
+        <PerformanceOptimizer />
         <Toaster />
         <Sonner />
         <BrowserRouter>
