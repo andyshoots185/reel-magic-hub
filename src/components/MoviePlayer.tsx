@@ -22,24 +22,6 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressUpdateTimer = useRef<NodeJS.Timeout>();
 
-  // Sample YouTube video IDs for full movies (these would normally come from your backend)
-  const getYouTubeVideoId = (movieId: string) => {
-    // This is a mapping of movie IDs to YouTube video IDs
-    // In a real app, this would come from your database
-    const movieYouTubeMap: { [key: string]: string } = {
-      '550': 'BdJKm16Co6M', // Fight Club
-      '13': 'sY1S34973zA', // Forrest Gump
-      '680': 'uYeXQqGY2as', // Pulp Fiction
-      '155': 'sAOzrChqmd0', // The Dark Knight
-      '497': 'QdBZY2fkU-0', // The Shawshank Redemption
-      // Add more movie mappings as needed
-    };
-    
-    return movieYouTubeMap[movieId] || 'dQw4w9WgXcQ'; // Default video if not found
-  };
-
-  const videoId = getYouTubeVideoId(streamData.id.toString());
-
   // Auto-hide controls
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(false), 3000);
@@ -101,11 +83,6 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
     setProgress([newProgress]);
   };
 
-  const downloadMovie = () => {
-    // For YouTube videos, we can't download directly, but we can open the video in a new tab
-    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
-  };
-
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -116,8 +93,8 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Quality options for YouTube
-  const qualityOptions = ['720p', '1080p', '1440p', '2160p'];
+  // Quality options
+  const qualityOptions = ['720p', '1080p', '1440p', '4K'];
 
   return (
     <div 
@@ -125,15 +102,27 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
       className="fixed inset-0 bg-black z-50 flex items-center justify-center"
       onMouseMove={() => setShowControls(true)}
     >
-      {/* YouTube Iframe */}
-      <iframe
-        className="w-full h-full"
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? 1 : 0}&mute=${isMuted ? 1 : 0}&controls=0&rel=0&modestbranding=1&iv_load_policy=3&cc_load_policy=0&fs=1&disablekb=1&start=${Math.floor((progress[0] / 100) * 3600)}`}
-        title={streamData.title}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-      />
+      {/* Movie Poster/Placeholder */}
+      <div className="w-full h-full relative flex items-center justify-center">
+        <img
+          src={`https://image.tmdb.org/t/p/original${streamData.poster_path || streamData.backdrop_path}`}
+          alt={streamData.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <div className="text-center text-white">
+            <h2 className="text-4xl font-bold mb-4">{streamData.title}</h2>
+            <p className="text-xl mb-8">Premium streaming coming soon</p>
+            <Button
+              onClick={togglePlay}
+              className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg"
+            >
+              {isPlaying ? <Pause className="mr-2" /> : <Play className="mr-2" />}
+              {isPlaying ? 'Pause' : 'Play Movie'}
+            </Button>
+          </div>
+        </div>
+      </div>
 
       {/* Player Controls */}
       <div className={`absolute inset-0 transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}>
@@ -142,18 +131,9 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
           <div className="flex items-center justify-between text-white">
             <div>
               <h1 className="text-xl font-bold">{streamData.title}</h1>
-              <p className="text-sm opacity-80">Quality: {selectedQuality} • YouTube Player</p>
+              <p className="text-sm opacity-80">Quality: {selectedQuality} • Premium Player</p>
             </div>
             <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={downloadMovie}
-                className="text-white hover:bg-white/20"
-                title="Open on YouTube"
-              >
-                <Download size={20} />
-              </Button>
               <Button
                 variant="ghost"
                 size="icon"
@@ -164,18 +144,6 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
               </Button>
             </div>
           </div>
-        </div>
-
-        {/* Center Play Button */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={togglePlay}
-            className="w-20 h-20 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all"
-          >
-            {isPlaying ? <Pause size={32} /> : <Play size={32} />}
-          </Button>
         </div>
 
         {/* Bottom Controls */}
@@ -191,8 +159,8 @@ const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
                 className="w-full"
               />
               <div className="flex justify-between text-sm text-white/80">
-                <span>{formatTime((progress[0] / 100) * 3600)}</span>
-                <span>1:00:00</span>
+                <span>{formatTime((progress[0] / 100) * 7200)}</span>
+                <span>2:00:00</span>
               </div>
             </div>
 

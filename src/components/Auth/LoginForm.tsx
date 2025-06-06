@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -19,22 +18,25 @@ const LoginForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Popular movie trailer video IDs
+  // Popular movie trailer video IDs - Action, Adventure, Sci-Fi movies
   const movieTrailers = [
-    'TcMBFSGVi1c', // Avatar
-    '6EiAsmvCEKg', // The Lion King
-    'hA6hldpSTF8', // Avengers Endgame
+    'TcMBFSGVi1c', // Avatar: The Way of Water
+    'hA6hldpSTF8', // Avengers: Endgame
     'vOUVVDWdXbo', // The Batman
     '8g18jFHCLXk', // Dune
-    'JfVOs4VSpmA', // Top Gun Maverick
+    'JfVOs4VSpmA', // Top Gun: Maverick
     '1roy4o4tqQM', // Black Panther
-    'gCcx85zbxz4', // Spider-Man No Way Home
+    'gCcx85zbxz4', // Spider-Man: No Way Home
+    'FV3bqvOHRQo', // Fast X
+    'uYPbbksJxIg', // Oppenheimer
+    'qEVUtrk8_B4', // John Wick: Chapter 4
+    'Ca3Jj1s6a8A', // Mission: Impossible
+    'giXco2jaZ_4', // No Time to Die
   ];
 
   useEffect(() => {
-    // Randomly select trailers for background
-    const shuffled = [...movieTrailers].sort(() => 0.5 - Math.random());
-    setTrailerVideos(shuffled.slice(0, 4));
+    // Set all trailers for the moving background
+    setTrailerVideos(movieTrailers);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,30 +82,79 @@ const LoginForm = () => {
         <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
-      {/* Floating movie trailers */}
-      <div className="absolute inset-0 pointer-events-none">
-        {trailerVideos.map((videoId, index) => (
-          <div
-            key={videoId}
-            className={`absolute opacity-20 rounded-lg overflow-hidden shadow-2xl ${
-              index === 0 ? 'top-10 left-10 w-64 h-36 animate-bounce' :
-              index === 1 ? 'top-20 right-16 w-56 h-32 animate-bounce delay-500' :
-              index === 2 ? 'bottom-20 left-20 w-72 h-40 animate-bounce delay-1000' :
-              'bottom-16 right-20 w-60 h-34 animate-bounce delay-1500'
-            }`}
-            style={{
-              animationDuration: '6s',
-              animationTimingFunction: 'ease-in-out',
-            }}
-          >
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
-              title={`Movie Trailer ${index + 1}`}
-              className="w-full h-full border-0"
-              allow="autoplay; encrypted-media"
-            />
-          </div>
-        ))}
+      {/* Large Moving Movie Trailers Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* First Column */}
+        <div className="absolute top-0 w-80 h-full animate-[slide-left_30s_linear_infinite]" style={{ left: '100%' }}>
+          {trailerVideos.slice(0, 4).map((videoId, index) => (
+            <div
+              key={`col1-${videoId}`}
+              className="w-full h-64 mb-8 opacity-30 rounded-xl overflow-hidden shadow-2xl border border-white/10"
+              style={{ animationDelay: `${index * 2}s` }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
+                title={`Movie Trailer ${index + 1}`}
+                className="w-full h-full border-0"
+                allow="autoplay; encrypted-media"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Second Column */}
+        <div className="absolute top-0 w-80 h-full animate-[slide-left_35s_linear_infinite]" style={{ left: '120%' }}>
+          {trailerVideos.slice(4, 8).map((videoId, index) => (
+            <div
+              key={`col2-${videoId}`}
+              className="w-full h-64 mb-8 opacity-25 rounded-xl overflow-hidden shadow-2xl border border-white/10"
+              style={{ animationDelay: `${index * 2.5}s` }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
+                title={`Movie Trailer ${index + 5}`}
+                className="w-full h-full border-0"
+                allow="autoplay; encrypted-media"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Third Column */}
+        <div className="absolute top-0 w-80 h-full animate-[slide-left_40s_linear_infinite]" style={{ left: '140%' }}>
+          {trailerVideos.slice(8, 12).map((videoId, index) => (
+            <div
+              key={`col3-${videoId}`}
+              className="w-full h-64 mb-8 opacity-20 rounded-xl overflow-hidden shadow-2xl border border-white/10"
+              style={{ animationDelay: `${index * 3}s` }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
+                title={`Movie Trailer ${index + 9}`}
+                className="w-full h-full border-0"
+                allow="autoplay; encrypted-media"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Fourth Column (for continuous effect) */}
+        <div className="absolute top-0 w-80 h-full animate-[slide-left_25s_linear_infinite]" style={{ left: '160%' }}>
+          {trailerVideos.slice(0, 4).map((videoId, index) => (
+            <div
+              key={`col4-${videoId}`}
+              className="w-full h-64 mb-8 opacity-15 rounded-xl overflow-hidden shadow-2xl border border-white/10"
+              style={{ animationDelay: `${index * 1.5}s` }}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&loop=1&playlist=${videoId}`}
+                title={`Movie Trailer ${index + 13}`}
+                className="w-full h-full border-0"
+                allow="autoplay; encrypted-media"
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Floating movie icons */}
@@ -114,7 +165,7 @@ const LoginForm = () => {
         <Film className="absolute bottom-20 right-20 text-white/10 w-7 h-7 animate-bounce delay-700" />
       </div>
 
-      <Card className="w-full max-w-md bg-gray-900/90 border-gray-800 backdrop-blur-sm relative z-10 shadow-2xl">
+      <Card className="w-full max-w-md bg-gray-900/95 border-gray-800 backdrop-blur-lg relative z-10 shadow-2xl">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
             <Film className="w-8 h-8 text-white" />
@@ -217,6 +268,17 @@ const LoginForm = () => {
           </div>
         </CardContent>
       </Card>
+
+      <style jsx>{`
+        @keyframes slide-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-200%);
+          }
+        }
+      `}</style>
     </div>
   );
 };
