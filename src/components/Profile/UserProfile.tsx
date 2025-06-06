@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +36,14 @@ const languages = [
   { code: 'ja', name: 'Japanese' },
   { code: 'ko', name: 'Korean' },
 ];
+
+// Helper function to safely convert Json array to string array
+const toStringArray = (value: any): string[] => {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === 'string');
+  }
+  return [];
+};
 
 const UserProfile = () => {
   const { user } = useAuth();
@@ -79,8 +86,8 @@ const UserProfile = () => {
 
     if (data) {
       setPreferences({
-        preferred_genres: Array.isArray(data.preferred_genres) ? data.preferred_genres : [],
-        preferred_languages: Array.isArray(data.preferred_languages) ? data.preferred_languages : ['en'],
+        preferred_genres: toStringArray(data.preferred_genres),
+        preferred_languages: toStringArray(data.preferred_languages).length > 0 ? toStringArray(data.preferred_languages) : ['en'],
         default_quality: data.default_quality || '1080p',
         auto_play_next: data.auto_play_next ?? true,
         subtitles_enabled: data.subtitles_enabled ?? false,
