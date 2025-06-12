@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,7 @@ import Feedback from "./pages/Feedback";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import MobileNavBar from '@/components/MobileNavBar';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +58,7 @@ const App = () => (
             <Route path="/feedback" element={<Feedback />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <MobileNavBar />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
