@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/Auth/AuthProvider";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import PerformanceOptimizer from "@/components/PerformanceOptimizer";
-import Dashboard from "./pages/Dashboard";
+import Index from "./pages/Index";
 import Movies from "./pages/Movies";
 import TVShows from "./pages/TVShows";
 import MovieDetails from "./pages/MovieDetails";
@@ -39,38 +38,13 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/movies" element={
-              <ProtectedRoute>
-                <Movies />
-              </ProtectedRoute>
-            } />
-            <Route path="/tv-shows" element={
-              <ProtectedRoute>
-                <TVShows />
-              </ProtectedRoute>
-            } />
-            <Route path="/movie/:id" element={
-              <ProtectedRoute>
-                <MovieDetails />
-              </ProtectedRoute>
-            } />
-            <Route path="/search" element={
-              <ProtectedRoute>
-                <SearchResults />
-              </ProtectedRoute>
-            } />
+            <Route path="/" element={<Index />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/tv-shows" element={<TVShows />} />
+            <Route path="/movie/:id" element={<MovieDetails />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/my-list" element={
               <ProtectedRoute>
                 <MyList />
@@ -81,11 +55,7 @@ const App = () => (
                 <Profile />
               </ProtectedRoute>
             } />
-            <Route path="/feedback" element={
-              <ProtectedRoute>
-                <Feedback />
-              </ProtectedRoute>
-            } />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <MobileNavBar />

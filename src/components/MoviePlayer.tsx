@@ -4,30 +4,23 @@ import { Play, Pause, Volume2, VolumeX, Settings, Download, Maximize, SkipBack, 
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getMovieStreamingData, updateWatchProgress, MovieStreamData } from '@/services/movieService';
-import { useQuery } from '@tanstack/react-query';
+import { MovieStreamData, updateWatchProgress } from '@/services/movieService';
 
 interface MoviePlayerProps {
-  movieId: number;
-  title: string;
+  streamData: MovieStreamData;
   onClose: () => void;
 }
 
-const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
+const MoviePlayer = ({ streamData, onClose }: MoviePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([80]);
   const [isMuted, setIsMuted] = useState(false);
-  const [progress, setProgress] = useState([0]);
+  const [progress, setProgress] = useState([streamData.watchProgress || 0]);
   const [selectedQuality, setSelectedQuality] = useState('1080p');
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressUpdateTimer = useRef<NodeJS.Timeout>();
-
-  const { data: streamData } = useQuery({
-    queryKey: ['movieStream', movieId],
-    queryFn: () => getMovieStreamingData(movieId),
-  });
 
   // Auto-hide controls
   useEffect(() => {
@@ -37,10 +30,10 @@ const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
 
   // Save progress periodically
   useEffect(() => {
-    if (isPlaying && streamData) {
+    if (isPlaying) {
       progressUpdateTimer.current = setInterval(() => {
-        updateWatchProgress(movieId, Math.floor(progress[0]));
-      }, 10000);
+        updateWatchProgress(streamData.id, Math.floor(progress[0]));
+      }, 10000); // Update every 10 seconds
     } else {
       if (progressUpdateTimer.current) {
         clearInterval(progressUpdateTimer.current);
@@ -52,14 +45,7 @@ const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
         clearInterval(progressUpdateTimer.current);
       }
     };
-  }, [isPlaying, progress, movieId, streamData]);
-
-  // Set initial progress from stream data
-  useEffect(() => {
-    if (streamData?.watchProgress) {
-      setProgress([streamData.watchProgress]);
-    }
-  }, [streamData]);
+  }, [isPlaying, progress, streamData.id]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -107,15 +93,8 @@ const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Quality options
   const qualityOptions = ['720p', '1080p', '1440p', '4K'];
-
-  if (!streamData) {
-    return (
-      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
-      </div>
-    );
-  }
 
   return (
     <div 
@@ -127,13 +106,13 @@ const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
       <div className="w-full h-full relative flex items-center justify-center">
         <img
           src={`https://image.tmdb.org/t/p/original${streamData.posterPath || streamData.backdropPath}`}
-          alt={title}
+          alt={streamData.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
           <div className="text-center text-white">
-            <h2 className="text-4xl font-bold mb-4">{title}</h2>
-            <p className="text-xl mb-8">Premium streaming experience</p>
+            <h2 className="text-4xl font-bold mb-4">{streamData.title}</h2>
+            <p className="text-xl mb-8">Premium streaming coming soon</p>
             <Button
               onClick={togglePlay}
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg"
@@ -151,7 +130,7 @@ const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
         <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/70 to-transparent p-4">
           <div className="flex items-center justify-between text-white">
             <div>
-              <h1 className="text-xl font-bold">{title}</h1>
+              <h1 className="text-xl font-bold">{streamData.title}</h1>
               <p className="text-sm opacity-80">Quality: {selectedQuality} • Premium Player</p>
             </div>
             <div className="flex items-center space-x-2">
@@ -180,8 +159,8 @@ const MoviePlayer = ({ movieId, title, onClose }: MoviePlayerProps) => {
                 className="w-full"
               />
               <div className="flex justify-between text-sm text-white/80">
-                <span>{formatTime((progress[0] / 100) * (streamData.duration * 60))}</span>
-                <span>{formatTime(streamData.duration * 60)}</span>
+                <span>{formatTime((progress[0] / 100) * 7200)}</span>
+                <span>2:00:00</span>
               </div>
             </div>
 

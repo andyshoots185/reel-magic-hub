@@ -1,22 +1,14 @@
-
 import { Link, useLocation } from 'react-router-dom';
-import { Film, Bookmark, MessageSquare, Home, User } from 'lucide-react';
-import { useAuth } from '@/components/Auth/AuthProvider';
+import { Film, Bookmark, MessageSquare, Home } from 'lucide-react';
 
 const MobileNavBar = () => {
   const location = useLocation();
-  const { user } = useAuth();
-
-  // Don't show navbar on auth pages or if not authenticated
-  if (!user || location.pathname === '/login' || location.pathname === '/register') {
-    return null;
-  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-gray-800 flex justify-around items-center py-2 md:hidden">
-      <Link to="/dashboard" className={`flex flex-col items-center text-xs ${location.pathname === '/dashboard' ? 'text-red-500' : 'text-white'}`}>
+      <Link to="/" className={`flex flex-col items-center text-xs ${location.pathname === '/' ? 'text-red-500' : 'text-white'}`}>
         <Home size={22} />
-        Dashboard
+        Home
       </Link>
       <Link to="/movies" className={`flex flex-col items-center text-xs ${location.pathname === '/movies' ? 'text-red-500' : 'text-white'}`}>
         <Film size={22} />
@@ -26,9 +18,9 @@ const MobileNavBar = () => {
         <Bookmark size={22} />
         My List
       </Link>
-      <Link to="/profile" className={`flex flex-col items-center text-xs ${location.pathname === '/profile' ? 'text-red-500' : 'text-white'}`}>
-        <User size={22} />
-        Profile
+      <Link to="/feedback" className={`flex flex-col items-center text-xs ${location.pathname === '/feedback' ? 'text-red-500' : 'text-white'}`}>
+        <MessageSquare size={22} />
+        Feedback
       </Link>
     </nav>
   );
