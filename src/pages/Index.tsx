@@ -1,88 +1,66 @@
 
-import { useState, useEffect } from 'react';
-import { Upload } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Header from '@/components/Header';
-import HeroSection from '@/components/HeroSection';
-import MovieGrid from '@/components/MovieGrid';
-import SmartRecommendations from '@/components/SmartRecommendations';
-import ContactSection from '@/components/ContactSection';
-import TrailersSection from '@/components/TrailersSection';
-import ContinueWatching from '@/components/ContinueWatching/ContinueWatching';
-import { useAuth } from '@/components/Auth/AuthProvider';
-
-const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
-const BASE_URL = 'https://api.themoviedb.org/3';
-
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  backdrop_path: string;
-  overview: string;
-  release_date: string;
-  vote_average: number;
-  genre_ids: number[];
-}
+import { Button } from "@/components/ui/button";
+import { Play, Film, Star, Users } from "lucide-react";
+import { Link } from "react-router-dom";
+import Header from "@/components/Header";
+import ContactSection from "@/components/ContactSection";
 
 const Index = () => {
-  const { user } = useAuth();
-  const [featuredMovies, setFeaturedMovies] = useState<Movie[]>([]);
-  const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
-  const [topRatedMovies, setTopRatedMovies] = useState<Movie[]>([]);
-  const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
-
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        // Fetch different categories of movies
-        const [featuredRes, popularRes, topRatedRes, trendingRes] = await Promise.all([
-          fetch(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}`),
-          fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`),
-          fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`),
-          fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`)
-        ]);
-
-        const [featured, popular, topRated, trending] = await Promise.all([
-          featuredRes.json(),
-          popularRes.json(),
-          topRatedRes.json(),
-          trendingRes.json()
-        ]);
-
-        setFeaturedMovies(featured.results?.slice(0, 20) || []);
-        setPopularMovies(popular.results?.slice(0, 20) || []);
-        setTopRatedMovies(topRated.results?.slice(0, 20) || []);
-        setTrendingMovies(trending.results?.slice(0, 20) || []);
-      } catch (error) {
-        console.error('Error fetching movies:', error);
-      }
-    };
-
-    fetchMovies();
-  }, []);
-
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black text-white">
       <Header />
       
-      <main>
-        <HeroSection movies={featuredMovies} />
-        
-        <div className="py-8">
-          <div className="container mx-auto space-y-12">
-            {user && <ContinueWatching />}
-            <MovieGrid title="Now Playing" movies={featuredMovies} />
-            <MovieGrid title="Popular Movies" movies={popularMovies} />
-            <MovieGrid title="Top Rated" movies={topRatedMovies} />
-            <MovieGrid title="Trending This Week" movies={trendingMovies} />
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center bg-gradient-to-r from-red-900/20 to-black">
+        <div className="absolute inset-0 bg-black/50 z-10"></div>
+        <div className="relative z-20 text-center max-w-4xl mx-auto px-4">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-red-500 to-white bg-clip-text text-transparent">
+            Welcome to ReelFlix
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 text-gray-300">
+            Stream unlimited movies and TV shows in stunning quality
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/register">
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-3">
+                <Play className="mr-2 h-5 w-5" />
+                Start Watching
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-black px-8 py-3">
+                Sign In
+              </Button>
+            </Link>
           </div>
         </div>
-        
-        <TrailersSection />
-        <SmartRecommendations />
-        <ContactSection />
-      </main>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-16">Why Choose ReelFlix?</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-6">
+              <Film className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold mb-4">Vast Library</h3>
+              <p className="text-gray-400">Access thousands of movies and TV shows from around the world</p>
+            </div>
+            <div className="text-center p-6">
+              <Star className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold mb-4">HD Quality</h3>
+              <p className="text-gray-400">Enjoy crystal clear streaming in HD and 4K resolution</p>
+            </div>
+            <div className="text-center p-6">
+              <Users className="h-12 w-12 text-red-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold mb-4">Multiple Devices</h3>
+              <p className="text-gray-400">Watch on your TV, laptop, tablet, or smartphone</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <ContactSection />
     </div>
   );
 };

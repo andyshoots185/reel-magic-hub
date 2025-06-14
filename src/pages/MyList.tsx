@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Play, Download, Trash2, Clock, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -244,7 +243,8 @@ const MyList = () => {
       
       {isPlayerOpen && currentMovie && (
         <MoviePlayer
-          streamData={currentMovie}
+          movieId={currentMovie.id}
+          title={currentMovie.title}
           onClose={() => {
             setIsPlayerOpen(false);
             setCurrentMovie(null);

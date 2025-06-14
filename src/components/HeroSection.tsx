@@ -15,7 +15,7 @@ interface Movie {
   genre_ids: number[];
 }
 
-const HeroSection = ({ movies }: { movies: Movie[] }) => {
+const HeroSection = ({ movies }: { movies?: Movie[] }) => {
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const navigate = useNavigate();
 
