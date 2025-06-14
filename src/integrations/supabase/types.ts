@@ -460,6 +460,54 @@ export type Database = {
           },
         ]
       }
+      subscribers: {
+        Row: {
+          amount_paid: number | null
+          created_at: string
+          currency: string | null
+          email: string
+          id: string
+          payment_method: string | null
+          payment_reference: string | null
+          subscribed: boolean
+          subscription_end: string | null
+          subscription_start: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          email: string
+          id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string
+          currency?: string | null
+          email?: string
+          id?: string
+          payment_method?: string | null
+          payment_reference?: string | null
+          subscribed?: boolean
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           auto_play_next: boolean | null
