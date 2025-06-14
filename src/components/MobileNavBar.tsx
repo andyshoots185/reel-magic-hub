@@ -7,8 +7,8 @@ const MobileNavBar = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Don't show navbar on guest pages
-  if (!user || location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register') {
+  // Don't show navbar on auth pages or if not authenticated
+  if (!user || location.pathname === '/login' || location.pathname === '/register') {
     return null;
   }
 

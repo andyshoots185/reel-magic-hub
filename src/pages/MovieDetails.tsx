@@ -11,30 +11,17 @@ import MovieSocial from '@/components/SocialFeatures/MovieSocial';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Play, Plus, Heart, Share2 } from 'lucide-react';
-import { movieService } from '@/services/movieService';
-import ProtectedContent from '@/components/ProtectedContent';
-import SubscriptionModal from '@/components/SubscriptionModal';
-import { useSubscription } from '@/contexts/SubscriptionContext';
+import { getMovieDetails } from '@/services/movieService';
 
 const MovieDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { isSubscribed, checkSubscription } = useSubscription();
   const [showPlayer, setShowPlayer] = useState(false);
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const { data: movie, isLoading } = useQuery({
     queryKey: ['movie', id],
-    queryFn: () => movieService.getMovieDetails(Number(id)),
+    queryFn: () => getMovieDetails(Number(id)),
     enabled: !!id,
   });
-
-  const handleWatchClick = () => {
-    if (!isSubscribed) {
-      setShowSubscriptionModal(true);
-    } else {
-      setShowPlayer(true);
-    }
-  };
 
   if (isLoading) {
     return (
@@ -60,13 +47,11 @@ const MovieDetails = () => {
       <Header />
       
       {showPlayer ? (
-        <ProtectedContent>
-          <MoviePlayer 
-            movieId={movie.id}
-            title={movie.title}
-            onClose={() => setShowPlayer(false)}
-          />
-        </ProtectedContent>
+        <MoviePlayer 
+          movieId={movie.id}
+          title={movie.title}
+          onClose={() => setShowPlayer(false)}
+        />
       ) : (
         <div className="pt-16">
           {/* Hero Section */}
@@ -95,10 +80,10 @@ const MovieDetails = () => {
                     <Button 
                       size="lg" 
                       className="bg-red-600 hover:bg-red-700"
-                      onClick={handleWatchClick}
+                      onClick={() => setShowPlayer(true)}
                     >
                       <Play className="w-5 h-5 mr-2" />
-                      {isSubscribed ? 'Watch Now' : 'Subscribe to Watch'}
+                      Watch Now
                     </Button>
                     <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-black">
                       <Plus className="w-5 h-5 mr-2" />
@@ -121,29 +106,17 @@ const MovieDetails = () => {
           {/* Content Sections */}
           <div className="py-12">
             <div className="container mx-auto px-4 space-y-12">
-              <ProtectedContent showSubscriptionPrompt={false}>
-                <MovieRating movieId={movie.id} movieTitle={movie.title} />
-                <WatchParty movieId={movie.id} movieTitle={movie.title} />
-                <SocialShare 
-                  movieId={movie.id}
-                  movieTitle={movie.title}
-                  description={movie.overview || ''}
-                />
-                <MovieSocial movieId={movie.id} />
-              </ProtectedContent>
+              <MovieRating movieId={movie.id} movieTitle={movie.title} />
+              <WatchParty movieId={movie.id} movieTitle={movie.title} />
+              <SocialShare 
+                movieId={movie.id}
+                movieTitle={movie.title}
+              />
+              <MovieSocial movieId={movie.id} />
             </div>
           </div>
         </div>
       )}
-
-      <SubscriptionModal
-        isOpen={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        onSubscribe={() => {
-          checkSubscription();
-          setShowSubscriptionModal(false);
-        }}
-      />
     </div>
   );
 };

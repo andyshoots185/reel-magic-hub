@@ -5,10 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/Auth/AuthProvider";
-import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 import PerformanceOptimizer from "@/components/PerformanceOptimizer";
-import GuestTrailers from "./pages/GuestTrailers";
 import Dashboard from "./pages/Dashboard";
 import Movies from "./pages/Movies";
 import TVShows from "./pages/TVShows";
@@ -35,62 +33,64 @@ const queryClient = new QueryClient({
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <SubscriptionProvider>
-        <TooltipProvider>
-          <PerformanceOptimizer />
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<GuestTrailers />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/movies" element={
-                <ProtectedRoute>
-                  <Movies />
-                </ProtectedRoute>
-              } />
-              <Route path="/tv-shows" element={
-                <ProtectedRoute>
-                  <TVShows />
-                </ProtectedRoute>
-              } />
-              <Route path="/movie/:id" element={
-                <ProtectedRoute>
-                  <MovieDetails />
-                </ProtectedRoute>
-              } />
-              <Route path="/search" element={
-                <ProtectedRoute>
-                  <SearchResults />
-                </ProtectedRoute>
-              } />
-              <Route path="/my-list" element={
-                <ProtectedRoute>
-                  <MyList />
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } />
-              <Route path="/feedback" element={
-                <ProtectedRoute>
-                  <Feedback />
-                </ProtectedRoute>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <MobileNavBar />
-          </BrowserRouter>
-        </TooltipProvider>
-      </SubscriptionProvider>
+      <TooltipProvider>
+        <PerformanceOptimizer />
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/movies" element={
+              <ProtectedRoute>
+                <Movies />
+              </ProtectedRoute>
+            } />
+            <Route path="/tv-shows" element={
+              <ProtectedRoute>
+                <TVShows />
+              </ProtectedRoute>
+            } />
+            <Route path="/movie/:id" element={
+              <ProtectedRoute>
+                <MovieDetails />
+              </ProtectedRoute>
+            } />
+            <Route path="/search" element={
+              <ProtectedRoute>
+                <SearchResults />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-list" element={
+              <ProtectedRoute>
+                <MyList />
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/feedback" element={
+              <ProtectedRoute>
+                <Feedback />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <MobileNavBar />
+        </BrowserRouter>
+      </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

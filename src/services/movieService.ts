@@ -117,13 +117,3 @@ export const getMovieTrailers = async (movieId: number) => {
     return [];
   }
 };
-
-// Export the service object
-export const movieService = {
-  getMovieDetails,
-  getPopularMovies,
-  getTrendingMovies,
-  getMovieStreamingData,
-  updateWatchProgress,
-  getMovieTrailers
-};

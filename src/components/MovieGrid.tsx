@@ -1,6 +1,6 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { movieService } from '@/services/movieService';
+import { getPopularMovies, getTrendingMovies } from '@/services/movieService';
 import MovieCard from './MovieCard';
 
 interface Movie {
@@ -21,7 +21,7 @@ interface MovieGridProps {
 const MovieGrid = ({ title = "Movies", movies, category = 'popular' }: MovieGridProps) => {
   const { data: fetchedMovies, isLoading } = useQuery({
     queryKey: ['movies', category],
-    queryFn: () => category === 'popular' ? movieService.getPopularMovies() : movieService.getTrendingMovies(),
+    queryFn: () => category === 'popular' ? getPopularMovies() : getTrendingMovies(),
     enabled: !movies, // Only fetch if movies are not provided
   });
 
