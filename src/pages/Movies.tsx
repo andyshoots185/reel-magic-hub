@@ -12,7 +12,8 @@ const Movies = () => {
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-white mb-8">Movies</h1>
           <ProtectedContent>
-            <MovieGrid />
+            <MovieGrid title="Popular Movies" category="popular" />
+            <MovieGrid title="Trending Movies" category="trending" />
           </ProtectedContent>
         </div>
       </div>

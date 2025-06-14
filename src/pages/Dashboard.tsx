@@ -6,7 +6,6 @@ import MovieGrid from '@/components/MovieGrid';
 import ContinueWatching from '@/components/ContinueWatching/ContinueWatching';
 import SmartRecommendations from '@/components/SmartRecommendations';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { Badge } from '@/components/ui/badge';
 import { Crown } from 'lucide-react';
 
 const Dashboard = () => {
@@ -35,8 +34,8 @@ const Dashboard = () => {
       
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-white mb-8">Popular Movies</h2>
-          <MovieGrid />
+          <MovieGrid title="Popular Movies" category="popular" />
+          <MovieGrid title="Trending This Week" category="trending" />
         </div>
       </section>
     </div>

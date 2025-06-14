@@ -122,11 +122,11 @@ const MovieDetails = () => {
           <div className="py-12">
             <div className="container mx-auto px-4 space-y-12">
               <ProtectedContent showSubscriptionPrompt={false}>
-                <MovieRating movieId={movie.id} />
-                <WatchParty movieId={movie.id} />
+                <MovieRating movieId={movie.id} movieTitle={movie.title} />
+                <WatchParty movieId={movie.id} movieTitle={movie.title} />
                 <SocialShare 
                   movieId={movie.id}
-                  title={movie.title}
+                  movieTitle={movie.title}
                   description={movie.overview || ''}
                 />
                 <MovieSocial movieId={movie.id} />
