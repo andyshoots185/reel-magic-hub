@@ -326,6 +326,36 @@ export type Database = {
         }
         Relationships: []
       }
+      movie_reviews: {
+        Row: {
+          created_at: string
+          id: string
+          movie_id: number
+          rating: number | null
+          review: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          movie_id: number
+          rating?: number | null
+          review?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          movie_id?: number
+          rating?: number | null
+          review?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       movie_shares: {
         Row: {
           created_at: string | null
@@ -395,6 +425,45 @@ export type Database = {
           title?: string
           vote_average?: number | null
           vote_count?: number | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          access_expires_at: string | null
+          amount: number | null
+          created_at: string
+          currency: string | null
+          id: string
+          movie_id: number | null
+          status: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          access_expires_at?: string | null
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          movie_id?: number | null
+          status?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          access_expires_at?: string | null
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          movie_id?: number | null
+          status?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -505,6 +574,30 @@ export type Database = {
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_friends: {
+        Row: {
+          created_at: string
+          friend_id: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_id: string
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_id?: string
+          id?: string
+          status?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -636,6 +729,91 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      watch_parties: {
+        Row: {
+          created_at: string
+          host_id: string
+          id: string
+          invite_code: string
+          movie_id: number
+        }
+        Insert: {
+          created_at?: string
+          host_id: string
+          id?: string
+          invite_code: string
+          movie_id: number
+        }
+        Update: {
+          created_at?: string
+          host_id?: string
+          id?: string
+          invite_code?: string
+          movie_id?: number
+        }
+        Relationships: []
+      }
+      watch_party_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          party_id: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          party_id?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          party_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watch_party_messages_party_id_fkey"
+            columns: ["party_id"]
+            isOneToOne: false
+            referencedRelation: "watch_parties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      watch_party_participants: {
+        Row: {
+          id: string
+          joined_at: string
+          party_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          party_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          party_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watch_party_participants_party_id_fkey"
+            columns: ["party_id"]
+            isOneToOne: false
+            referencedRelation: "watch_parties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
