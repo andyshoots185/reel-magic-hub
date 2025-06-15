@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,8 @@ import TrailersSection from '@/components/TrailersSection';
 import ContinueWatching from '@/components/ContinueWatching/ContinueWatching';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import GuestView from '@/components/GuestView';
+import PersonalizedRecommendations from "@/components/Recommendations/PersonalizedRecommendations";
+import FriendsActivityFeed from "@/components/Social/FriendsActivityFeed";
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -77,8 +78,10 @@ const Index = () => {
             <MovieGrid title="Popular Movies" movies={popularMovies} />
             <MovieGrid title="Top Rated" movies={topRatedMovies} />
             <MovieGrid title="Trending This Week" movies={trendingMovies} />
+            <PersonalizedRecommendations />
           </div>
         </div>
+        <FriendsActivityFeed />
         <TrailersSection />
         <SmartRecommendations />
         <ContactSection />

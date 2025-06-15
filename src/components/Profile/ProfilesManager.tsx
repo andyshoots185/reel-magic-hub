@@ -4,13 +4,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "../Auth/AuthProvider";
 import { Button } from "../ui/button";
 
+type Profile = {
+  id: string;
+  full_name: string;
+  avatar_url?: string;
+  bio?: string;
+};
+
 const ProfilesManager = () => {
   const { user } = useAuth();
-  const [profiles, setProfiles] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   useEffect(() => {
     if (!user) return;
     const fetch = async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("account_id", user.id);
+      const { data } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url, bio")
+        .eq("account_id", user.id);
       setProfiles(data || []);
     };
     fetch();
