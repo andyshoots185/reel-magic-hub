@@ -10,6 +10,7 @@ import ContactSection from '@/components/ContactSection';
 import TrailersSection from '@/components/TrailersSection';
 import ContinueWatching from '@/components/ContinueWatching/ContinueWatching';
 import { useAuth } from '@/components/Auth/AuthProvider';
+import GuestView from '@/components/GuestView';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -33,23 +34,21 @@ const Index = () => {
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
+    if (!user) return; // Guests should not fetch or see extra movie data
     const fetchMovies = async () => {
       try {
-        // Fetch different categories of movies
         const [featuredRes, popularRes, topRatedRes, trendingRes] = await Promise.all([
           fetch(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}`),
           fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`),
           fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`),
           fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`)
         ]);
-
         const [featured, popular, topRated, trending] = await Promise.all([
           featuredRes.json(),
           popularRes.json(),
           topRatedRes.json(),
           trendingRes.json()
         ]);
-
         setFeaturedMovies(featured.results?.slice(0, 20) || []);
         setPopularMovies(popular.results?.slice(0, 20) || []);
         setTopRatedMovies(topRated.results?.slice(0, 20) || []);
@@ -58,17 +57,19 @@ const Index = () => {
         console.error('Error fetching movies:', error);
       }
     };
-
     fetchMovies();
-  }, []);
+  }, [user]);
+
+  if (!user) {
+    // Only show TrailersSection to unauthenticated users
+    return <GuestView />;
+  }
 
   return (
     <div className="min-h-screen bg-black">
       <Header />
-      
       <main>
         <HeroSection movies={featuredMovies} />
-        
         <div className="py-8">
           <div className="container mx-auto space-y-12">
             {user && <ContinueWatching />}
@@ -78,7 +79,6 @@ const Index = () => {
             <MovieGrid title="Trending This Week" movies={trendingMovies} />
           </div>
         </div>
-        
         <TrailersSection />
         <SmartRecommendations />
         <ContactSection />

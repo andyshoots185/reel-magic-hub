@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,8 +23,8 @@ import MobileNavBar from '@/components/MobileNavBar';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
       retry: 2,
     },
   },
@@ -41,10 +42,28 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Index />} />
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/tv-shows" element={<TVShows />} />
-            <Route path="/movie/:id" element={<MovieDetails />} />
-            <Route path="/search" element={<SearchResults />} />
+            
+            {/* Protect all other routes with authentication */}
+            <Route path="/movies" element={
+              <ProtectedRoute>
+                <Movies />
+              </ProtectedRoute>
+            } />
+            <Route path="/tv-shows" element={
+              <ProtectedRoute>
+                <TVShows />
+              </ProtectedRoute>
+            } />
+            <Route path="/movie/:id" element={
+              <ProtectedRoute>
+                <MovieDetails />
+              </ProtectedRoute>
+            } />
+            <Route path="/search" element={
+              <ProtectedRoute>
+                <SearchResults />
+              </ProtectedRoute>
+            } />
             <Route path="/my-list" element={
               <ProtectedRoute>
                 <MyList />
@@ -55,7 +74,11 @@ const App = () => (
                 <Profile />
               </ProtectedRoute>
             } />
-            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/feedback" element={
+              <ProtectedRoute>
+                <Feedback />
+              </ProtectedRoute>
+            } />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <MobileNavBar />
