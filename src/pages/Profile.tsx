@@ -1,12 +1,10 @@
 
-import React from 'react';
-import Header from '@/components/Header';
-import UserProfile from '@/components/Profile/UserProfile';
+import React from "react";
+import UserProfile from "@/components/Profile/UserProfile";
 
 const Profile = () => {
   return (
-    <div className="min-h-screen bg-black">
-      <Header />
+    <div className="min-h-screen bg-black pt-24">
       <UserProfile />
     </div>
   );

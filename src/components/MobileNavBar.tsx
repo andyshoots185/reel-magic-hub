@@ -1,5 +1,6 @@
+
 import { Link, useLocation } from 'react-router-dom';
-import { Film, Bookmark, MessageSquare, Home } from 'lucide-react';
+import { Film, Bookmark, MessageSquare, Home, User } from 'lucide-react';
 
 const MobileNavBar = () => {
   const location = useLocation();
@@ -17,6 +18,10 @@ const MobileNavBar = () => {
       <Link to="/my-list" className={`flex flex-col items-center text-xs ${location.pathname === '/my-list' ? 'text-red-500' : 'text-white'}`}>
         <Bookmark size={22} />
         My List
+      </Link>
+      <Link to="/profile" className={`flex flex-col items-center text-xs ${location.pathname === '/profile' ? 'text-red-500' : 'text-white'}`}>
+        <User size={22} />
+        Profile
       </Link>
       <Link to="/feedback" className={`flex flex-col items-center text-xs ${location.pathname === '/feedback' ? 'text-red-500' : 'text-white'}`}>
         <MessageSquare size={22} />
