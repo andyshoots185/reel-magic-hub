@@ -1,7 +1,7 @@
-
 import { Link } from "react-router-dom";
 import TrailersSection from "@/components/TrailersSection";
 import { Button } from "@/components/ui/button";
+import GuestPublicDomainMovies from "./GuestPublicDomainMovies";
 
 const features = [
   "Browse & stream the latest movies and shows",
@@ -59,6 +59,8 @@ const GuestView = () => (
         <p className="text-xs text-gray-500 mt-6">No credit card required • Cancel anytime</p>
       </div>
     </section>
+    {/* New Public Domain Movies Section */}
+    <GuestPublicDomainMovies />
     {/* Movie Trailers grid (no header) */}
     <section className="flex-1">
       <TrailersSection />
