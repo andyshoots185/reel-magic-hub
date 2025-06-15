@@ -1,7 +1,7 @@
-
 import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
 import MovieGrid from '@/components/MovieGrid';
+import SubscriptionModal from "@/components/Subscription/SubscriptionModal";
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -100,13 +100,16 @@ const Movies = () => {
   return (
     <div className="min-h-screen bg-black">
       <Header />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-12 text-center">
             Movies Collection
           </h1>
-          
+          {/* Subscription section - can move to dedicated page/modal as needed */}
+          <div className="mb-12 flex justify-center">
+            <SubscriptionModal />
+          </div>
           <MovieGrid title="🎬 Action & Adventure" movies={actionMovies} />
           <MovieGrid title="😂 Comedy" movies={comedyMovies} />
           <MovieGrid title="🎭 Drama" movies={dramaMovies} />
