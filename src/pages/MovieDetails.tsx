@@ -11,6 +11,7 @@ import MoviePlayer from '@/components/MoviePlayer';
 import SocialShare from '@/components/SocialShare';
 import WatchParty from '@/components/WatchParty';
 import MovieRating from '@/components/MovieRating';
+import YouTubePlayer from '@/components/YouTubePlayer';
 
 const API_KEY = '4e44d9029b1270a757cddc766a1bcb63';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -36,6 +37,7 @@ const MovieDetails = () => {
 
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [currentStreamData, setCurrentStreamData] = useState<any>(null);
+  const [selectedTrailer, setSelectedTrailer] = useState<any | null>(null);
 
   const handleWatchNow = async () => {
     try {
@@ -47,6 +49,42 @@ const MovieDetails = () => {
       toast({
         title: "Error",
         description: "Failed to load movie stream. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleWatchTrailer = async () => {
+    try {
+      const { getMovieTrailers } = await import('@/services/movieService');
+      const trailers = await getMovieTrailers(movie.id);
+
+      if (trailers && trailers.length > 0) {
+        const officialTrailer = 
+          trailers.find((t: any) => t.type === 'Trailer' && t.site === 'YouTube' && t.name.toLowerCase().includes('official')) || 
+          trailers.find((t: any) => t.type === 'Trailer' && t.site === 'YouTube') ||
+          null;
+
+        if (officialTrailer) {
+          setSelectedTrailer(officialTrailer);
+        } else {
+          toast({
+            title: "No YouTube Trailer Found",
+            description: "We couldn't find a suitable YouTube trailer for this movie.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "No Trailer Found",
+          description: "We couldn't find any trailers for this movie.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load movie trailer. Please try again.",
         variant: "destructive",
       });
     }
@@ -198,6 +236,7 @@ const MovieDetails = () => {
                   <Button 
                     variant="outline" 
                     size="lg" 
+                    onClick={handleWatchTrailer}
                     className="border-gray-400 text-gray-300 hover:bg-gray-700 hover:border-gray-300 font-semibold px-8 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300"
                   >
                     <Video size={24} />
@@ -303,6 +342,14 @@ const MovieDetails = () => {
             setIsPlayerOpen(false);
             setCurrentStreamData(null);
           }}
+        />
+      )}
+
+      {selectedTrailer && (
+        <YouTubePlayer
+          videoId={selectedTrailer.key}
+          title={`${movie.title} - ${selectedTrailer.name}`}
+          onClose={() => setSelectedTrailer(null)}
         />
       )}
     </div>
