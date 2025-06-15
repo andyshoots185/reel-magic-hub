@@ -398,45 +398,6 @@ export type Database = {
         }
         Relationships: []
       }
-      orders: {
-        Row: {
-          access_expires_at: string | null
-          amount: number | null
-          created_at: string
-          currency: string | null
-          id: string
-          movie_id: number | null
-          status: string | null
-          stripe_session_id: string | null
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          access_expires_at?: string | null
-          amount?: number | null
-          created_at?: string
-          currency?: string | null
-          id?: string
-          movie_id?: number | null
-          status?: string | null
-          stripe_session_id?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          access_expires_at?: string | null
-          amount?: number | null
-          created_at?: string
-          currency?: string | null
-          id?: string
-          movie_id?: number | null
-          status?: string | null
-          stripe_session_id?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           avatar_url: string | null
